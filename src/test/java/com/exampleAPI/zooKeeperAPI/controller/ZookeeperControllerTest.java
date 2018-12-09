@@ -2,11 +2,13 @@ package com.exampleAPI.zooKeeperAPI.controller;
 
 import com.exampleAPI.zooKeeperAPI.service.ZookeeperService;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.*;
 
 public class ZookeeperControllerTest {
-    public ZookeeperController zookeeperController = new ZookeeperController();
+    @Autowired
+    private ZookeeperController zookeeperController;
 
     @Test
     public void zkCreate() {

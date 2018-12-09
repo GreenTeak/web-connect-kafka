@@ -5,9 +5,11 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,10 +26,21 @@ public class ZookeeperService {
         watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
         try {
             zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        addNodeData(PATH, TEST);
+
+        Stat stat = null;
+        try {
+            stat = zookeeper.exists(PATH, true);
+            if (stat == null) {
+                addNodeData(PATH, TEST);
+            }
+        } catch (KeeperException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) {
@@ -41,19 +54,19 @@ public class ZookeeperService {
     }
 
     public String listNodeData() {
-        List<String> children = null;
+        List<String> children = new ArrayList<>();
         try {
             children = zookeeper.getChildren(PATH, true);
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
         }
-        assert children != null;
+        if(children.isEmpty()) return "";
         return String.join(",", children);
     }
 
     public boolean addNodeData(String path, String data) {
         try {
-            zookeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+            zookeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
         }

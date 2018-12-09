@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+
+
 @Controller
 public class ZookeeperController {
 
@@ -16,16 +18,16 @@ public class ZookeeperController {
     public static final String CREATE_SUCCESS = "create success";
     public static final String UPDATE_SUCCESS = "update success";
     public static final String REGEX = ":";
-    public static final String ZK_NODE = "/zkNode";
+    public static final String API = "/api/node";
     @Autowired
     public ZookeeperService zookeeperService;
 
-    @GetMapping(value = ZK_NODE)
+    @GetMapping(value = API + "/get")
     public String zkget() {
         return zookeeperService.listNodeData();
     }
 
-    @PostMapping(value = ZK_NODE)
+    @PostMapping(value = API + "/create")
     public String zkCreate(@RequestBody String input) {
         String[] str = input.split(REGEX);
         if (str.length == 2) {
@@ -35,12 +37,12 @@ public class ZookeeperController {
         return String.format(WRONG_PATH_STR_FORMAT, input);
     }
 
-    @DeleteMapping(value = ZK_NODE)
+    @DeleteMapping(value = API + "/delete")
     public void zkDelete(@RequestBody String path) {
         zookeeperService.deleteNode(path);
     }
 
-    @PutMapping(value = ZK_NODE)
+    @PutMapping(value = API + "/update")
     public String zkUpdate(@RequestBody String input) {
         String[] str = input.split(REGEX);
         if (str.length == 2) {
