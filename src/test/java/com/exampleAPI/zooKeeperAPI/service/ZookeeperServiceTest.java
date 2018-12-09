@@ -14,13 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
-
-import static com.exampleAPI.zooKeeperAPI.service.ZookeeperService.CONNECT_STRING;
 import static com.exampleAPI.zooKeeperAPI.service.ZookeeperService.PATH;
-import static com.exampleAPI.zooKeeperAPI.service.ZookeeperService.ZOOKEEPER_PATH_TEST;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
