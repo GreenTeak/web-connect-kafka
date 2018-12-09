@@ -14,24 +14,26 @@ import java.util.List;
 public class ZookeeperService {
 
     public final static String PATH = "/test";
-    public final static String SEPERATOR = "/";
+    public static final String ZOOKEEPER_PATH_TEST = "zookeeper PATH : /test";
+    public static final String CONNECT_STRING = "127.0.0.1:2181";
+    public static final String TEST = "test";
     public Watcher watcher;
     public ZooKeeper zookeeper;
 
     private void initService() {
-        watcher = event -> System.out.println("zookeeper PATH : /test");
+        watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
         try {
-            zookeeper = new ZooKeeper("127.0.0.1:2181", 1000, watcher);
+            zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        addNodeData("test", "test");
+        addNodeData(PATH, TEST);
     }
 
     public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) {
         this.watcher = watcher;
         this.zookeeper = zooKeeper;
-        addNodeData("test", "test");
+        addNodeData(PATH, TEST);
     }
 
     public ZookeeperService() {
