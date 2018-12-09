@@ -25,6 +25,13 @@ public class ZookeeperService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        addNodeData("test", "test");
+    }
+
+    public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) {
+        this.watcher = watcher;
+        this.zookeeper = zooKeeper;
+        addNodeData("test", "test");
     }
 
     public ZookeeperService() {
@@ -44,7 +51,7 @@ public class ZookeeperService {
 
     public boolean addNodeData(String path, String data) {
         try {
-            zookeeper.create(PATH + SEPERATOR + path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+            zookeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -52,9 +59,8 @@ public class ZookeeperService {
     }
 
     public boolean deleteNode(String path) {
-
         try {
-            zookeeper.delete(PATH + SEPERATOR + path, -1);
+            zookeeper.delete(path, -1);
         } catch (InterruptedException | KeeperException e) {
             e.printStackTrace();
         }
@@ -63,7 +69,7 @@ public class ZookeeperService {
 
     public boolean updateNodeData(String path, String data) {
         try {
-            zookeeper.setData(PATH + SEPERATOR + path, data.getBytes(), -1);
+            zookeeper.setData(path, data.getBytes(), -1);
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
         }
