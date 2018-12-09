@@ -2,16 +2,15 @@ package com.exampleAPI.zooKeeperAPI.controller;
 
 import com.exampleAPI.zooKeeperAPI.service.ZookeeperService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
-
-@Controller
+@RestController
 public class ZookeeperController {
 
     public static final String WRONG_PATH_STR_FORMAT = "%s is wrong,please input path:str format";
@@ -23,7 +22,7 @@ public class ZookeeperController {
     public ZookeeperService zookeeperService;
 
     @GetMapping(value = API + "/get")
-    public String zkget() {
+    public String zkGet() {
         return zookeeperService.listNodeData();
     }
 
@@ -38,8 +37,8 @@ public class ZookeeperController {
     }
 
     @DeleteMapping(value = API + "/delete")
-    public void zkDelete(@RequestBody String path) {
-        zookeeperService.deleteNode(path);
+    public boolean zkDelete(@RequestBody String path) {
+        return zookeeperService.deleteNode(path);
     }
 
     @PutMapping(value = API + "/update")

@@ -6,6 +6,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,8 +20,26 @@ public class ZookeeperService {
     public static final String ZOOKEEPER_PATH_TEST = "zookeeper PATH : /test";
     public static final String CONNECT_STRING = "127.0.0.1:2181";
     public static final String TEST = "test";
-    public Watcher watcher;
+
     public ZooKeeper zookeeper;
+
+    public Watcher watcher;
+
+    public Watcher getWatcher() {
+        return watcher;
+    }
+
+    public ZooKeeper getZookeeper() {
+        return zookeeper;
+    }
+
+    public void setWatcher(Watcher watcher) {
+        this.watcher = watcher;
+    }
+
+    public void setZookeeper(ZooKeeper zookeeper) {
+        this.zookeeper = zookeeper;
+    }
 
     private void initService() {
         watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
@@ -46,12 +65,21 @@ public class ZookeeperService {
     public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) {
         this.watcher = watcher;
         this.zookeeper = zooKeeper;
-        addNodeData(PATH, TEST);
+        Stat stat = null;
+        try {
+            stat = zookeeper.exists(PATH, true);
+            if (stat == null) {
+                addNodeData(PATH, TEST);
+            }
+        } catch (KeeperException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public ZookeeperService() {
         initService();
     }
+
 
     public String listNodeData() {
         List<String> children = new ArrayList<>();
@@ -60,7 +88,7 @@ public class ZookeeperService {
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
         }
-        if(children.isEmpty()) return "";
+        if (children.isEmpty()) return "";
         return String.join(",", children);
     }
 
