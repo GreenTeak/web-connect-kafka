@@ -16,15 +16,16 @@ public class ZookeeperController {
     public static final String CREATE_SUCCESS = "create success";
     public static final String UPDATE_SUCCESS = "update success";
     public static final String REGEX = ":";
+    public static final String ZK_NODE = "/zkNode";
     @Autowired
     public ZookeeperService zookeeperService;
 
-    @GetMapping(value = "/zkNode")
+    @GetMapping(value = ZK_NODE)
     public String zkget() {
         return zookeeperService.listNodeData();
     }
 
-    @PostMapping(value = "/zkNode")
+    @PostMapping(value = ZK_NODE)
     public String zkCreate(@RequestBody String input) {
         String[] str = input.split(REGEX);
         if (str.length == 2) {
@@ -34,15 +35,15 @@ public class ZookeeperController {
         return String.format(WRONG_PATH_STR_FORMAT, input);
     }
 
-    @DeleteMapping(value = "/zkNode")
+    @DeleteMapping(value = ZK_NODE)
     public void zkDelete(@RequestBody String path) {
         zookeeperService.deleteNode(path);
     }
 
-    @PutMapping(value = "/zkNode")
+    @PutMapping(value = ZK_NODE)
     public String zkUpdate(@RequestBody String input) {
         String[] str = input.split(REGEX);
-        if(str.length ==2) {
+        if (str.length == 2) {
             zookeeperService.updateNodeData(str[0], str[1]);
             return UPDATE_SUCCESS;
         }
