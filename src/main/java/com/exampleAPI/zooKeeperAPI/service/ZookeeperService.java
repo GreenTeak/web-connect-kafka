@@ -50,30 +50,14 @@ public class ZookeeperService {
             e.printStackTrace();
         }
 
-        Stat stat = null;
-        try {
-            stat = zookeeper.exists(PATH, true);
-            if (stat == null) {
-                addNodeData(PATH, TEST);
-            }
-        } catch (KeeperException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        addNodeIfNotExists(PATH,TEST);
 
     }
 
     public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) {
         this.watcher = watcher;
         this.zookeeper = zooKeeper;
-        Stat stat = null;
-        try {
-            stat = zookeeper.exists(PATH, true);
-            if (stat == null) {
-                addNodeData(PATH, TEST);
-            }
-        } catch (KeeperException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        addNodeIfNotExists(PATH,TEST);
     }
 
     public ZookeeperService() {
@@ -92,15 +76,6 @@ public class ZookeeperService {
         return String.join(",", children);
     }
 
-    public boolean addNodeData(String path, String data) {
-        try {
-            zookeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        } catch (KeeperException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-
     public boolean deleteNode(String path) {
         try {
             zookeeper.delete(path, -1);
@@ -113,6 +88,27 @@ public class ZookeeperService {
     public boolean updateNodeData(String path, String data) {
         try {
             zookeeper.setData(path, data.getBytes(), -1);
+        } catch (KeeperException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public void addNodeIfNotExists(String path,String str) {
+        Stat stat = null;
+        try {
+            stat = zookeeper.exists(path, true);
+            if (stat == null) {
+                addNodeData(path, str);
+            }
+        } catch (KeeperException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean addNodeData(String path, String data) {
+        try {
+            zookeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         } catch (KeeperException | InterruptedException e) {
             e.printStackTrace();
         }

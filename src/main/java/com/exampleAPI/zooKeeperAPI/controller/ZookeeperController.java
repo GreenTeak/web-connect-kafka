@@ -30,7 +30,7 @@ public class ZookeeperController {
     public String zkCreate(@RequestBody String input) {
         String[] str = input.split(REGEX);
         if (str.length == 2) {
-            zookeeperService.addNodeData(str[0], str[1]);
+            zookeeperService.addNodeIfNotExists(str[0], str[1]);
             return CREATE_SUCCESS;
         }
         return String.format(WRONG_PATH_STR_FORMAT, input);

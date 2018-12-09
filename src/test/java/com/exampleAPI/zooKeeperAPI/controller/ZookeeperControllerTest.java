@@ -49,7 +49,7 @@ public class ZookeeperControllerTest {
                 .contentType(MediaType.ALL))
                 .andExpect(status().isOk());
         verify(zookeeperService,times(1))
-                .addNodeData(TEST_TEST_3, TEST_3);
+                .addNodeIfNotExists(TEST_TEST_3, TEST_3);
 
     }
 

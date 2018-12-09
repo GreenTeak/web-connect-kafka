@@ -42,7 +42,7 @@ public class ZookeeperServiceTest {
 
     @Test
     public void zkCreate() throws KeeperException, InterruptedException {
-        zookeeperService.addNodeData(TEST_TEST_3, TEST_3);
+        zookeeperService.addNodeIfNotExists(TEST_TEST_3, TEST_3);
         verify(zk).create(TEST_TEST_3,
                 TEST_3.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
     }
