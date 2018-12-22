@@ -36,7 +36,6 @@ dependencies {
 	compile("org.mockito:mockito-core:2.23.4")
 	compile('org.projectlombok:lombok')
 	compile("log4j:log4j:1.2.17")
-	compile("net.sf.json-lib:json-lib:2.4")
 	testCompile("junit:junit:4.12")
 }
 

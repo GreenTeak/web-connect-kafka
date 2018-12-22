@@ -10,10 +10,7 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 @Service
 @Data
@@ -28,17 +25,10 @@ public class ZookeeperService {
     public static final String TEST = "test";
     public static final String DELIMITER = ",";
 
-    public final Logger logger = Logger.getLogger(ZookeeperService.class);
 
-
-    public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) throws KeeperException, InterruptedException {
+    public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper){
         this.watcher = watcher;
         this.zookeeper = zooKeeper;
-    }
-
-    public ZookeeperService() throws InterruptedException, IOException, KeeperException {
-        watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
-        zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
     }
 
     public String listNodeData() throws KeeperException, InterruptedException {
@@ -56,8 +46,7 @@ public class ZookeeperService {
     }
 
     public boolean addNodeIfNotExists(Node node) throws KeeperException, InterruptedException {
-        Stat stat = null;
-        stat = zookeeper.exists(node.getPath(), true);
+        Stat stat = zookeeper.exists(node.getPath(), true);
         if (stat == null) {
             addNodeData(node.getPath(), node.getContent());
             return true;

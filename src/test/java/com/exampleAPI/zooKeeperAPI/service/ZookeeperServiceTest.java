@@ -6,16 +6,9 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.data.Stat;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.exampleAPI.zooKeeperAPI.service.ZookeeperService.PATH;
 import static org.mockito.Mockito.mock;
@@ -27,14 +20,14 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class ZookeeperServiceTest {
 
-    public static final String TEST_TEST_3 = "/test3";
-    public static final String TEST_3 = "test3";
+    public static final String TEST3_PATH = "/test3";
+    public static final String TEST3 = "test3";
 
     public Watcher watcher;
 
     public ZooKeeper zk;
 
-    public Node node = new Node(TEST_TEST_3,TEST_3);
+    public Node node = new Node(TEST3_PATH, TEST3);
 
     public ZookeeperService zookeeperService;
 
@@ -42,15 +35,15 @@ public class ZookeeperServiceTest {
     public void setUp() throws KeeperException, InterruptedException {
         watcher = mock(Watcher.class);
         zk = mock(ZooKeeper.class);
-        when(zk.exists("/test3",true)).thenReturn(null);
+        when(zk.exists(TEST3_PATH,true)).thenReturn(null);
         zookeeperService = new ZookeeperService(watcher, zk);
     }
 
     @Test
     public void shouldCreateOnceWhenAddNode() throws KeeperException, InterruptedException {
         zookeeperService.addNodeIfNotExists(node);
-        verify(zk).create(TEST_TEST_3,
-                TEST_3.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        verify(zk).create(TEST3_PATH,
+                TEST3.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
     }
 
     @Test
@@ -67,7 +60,7 @@ public class ZookeeperServiceTest {
 
     @Test
     public void shouldDeleteOnceWhenDeleteOnce() throws KeeperException, InterruptedException {
-        zookeeperService.deleteNode(TEST_TEST_3);
-        verify(zk,times(1)).delete(TEST_TEST_3,-1);
+        zookeeperService.deleteNode(TEST3_PATH);
+        verify(zk,times(1)).delete(TEST3_PATH,-1);
     }
 }

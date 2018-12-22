@@ -2,20 +2,17 @@ package com.exampleAPI.zooKeeperAPI.controller;
 
 import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.service.ZookeeperService;
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-import net.minidev.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooKeeper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,10 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ZookeeperControllerTest {
 
     public static final String API_NODE = "/api/node";
-    public static final String TEST_TEST_3 = "/test2";
-    public static final String TEST_3 = "test2";
-    public static final String JSON_CONTENT = "{\"path\":\"/test2\",\"context\":\"test2\"}";
-    public static final String TEST_1 = "test2";
+    public static final String TEST2_PATH = "/test2";
+    public static final String TEST2 = "test2";
 
     @MockBean
     private ZookeeperService zookeeperService;
@@ -47,20 +42,24 @@ public class ZookeeperControllerTest {
     @Autowired
     protected MockMvc mvc;
 
-    private Node node = new Node(TEST_TEST_3, TEST_3);
+    private Node node = new Node(TEST2_PATH, TEST2);
+
+    private String requestJson;
 
     @Before
-    public void setUp() throws KeeperException, InterruptedException {
-        when(zookeeperService.listNodeData()).thenReturn(TEST_1);
+    public void setUp() throws KeeperException, InterruptedException, JsonProcessingException {
+        when(zookeeperService.listNodeData()).thenReturn(TEST2);
+        Node node = new Node(TEST2_PATH, TEST2);
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        requestJson = ow.writeValueAsString(node);
     }
 
     @Test
     public void shouldBeReturnStatusIsCreatedWhenAddNode() throws Exception {
-        Node node = new Node("/test2","test2");
-
         mvc.perform(post(API_NODE)
-                .content(JSON_CONTENT)
-                .contentType(MediaType.ALL))
+                .content(requestJson)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         verify(zookeeperService, times(1))
                 .addNodeIfNotExists(node);
@@ -69,11 +68,9 @@ public class ZookeeperControllerTest {
 
     @Test
     public void shouldBeReturnStatusIsAcceptedWhenUpdateNode() throws Exception {
-        Node node = new Node("/test2","test2");
-
         mvc.perform(put(API_NODE)
-                .content(JSON_CONTENT)
-                .contentType(MediaType.ALL))
+                .content(requestJson)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted());
         verify(zookeeperService, times(1))
                 .updateNodeData(node);
@@ -81,14 +78,14 @@ public class ZookeeperControllerTest {
 
     @Test
     public void shouldBeReturnNodeListWhenGetNode() throws Exception {
-        DocumentContext response = JsonPath.parse(mvc.perform(get(API_NODE))
+        String contentAsString = mvc.perform(get(API_NODE))
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString());
+                .andReturn().getResponse().getContentAsString();
 
         verify(zookeeperService, times(1))
                 .listNodeData();
 
-        assertEquals(response.toString(), TEST_1);
+        assertEquals(contentAsString,TEST2);
 
     }
 
@@ -96,11 +93,11 @@ public class ZookeeperControllerTest {
     public void shouldBeReturnStatusIsAcceptedWhenDeleteNode() throws Exception {
 
         mvc.perform(delete(API_NODE)
-                .content(TEST_TEST_3)
+                .content(TEST2_PATH)
                 .contentType(MediaType.ALL))
                 .andExpect(status().isAccepted());
 
         verify(zookeeperService, times(1))
-                .deleteNode(TEST_TEST_3);
+                .deleteNode(TEST2_PATH);
     }
 }
