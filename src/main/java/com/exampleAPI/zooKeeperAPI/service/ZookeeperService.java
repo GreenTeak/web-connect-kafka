@@ -1,118 +1,86 @@
 package com.exampleAPI.zooKeeperAPI.service;
 
+import com.exampleAPI.zooKeeperAPI.model.Node;
+import lombok.Data;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 @Service
+@Data
 public class ZookeeperService {
+
+    public ZooKeeper zookeeper;
+    public Watcher watcher;
 
     public final static String PATH = "/test";
     public static final String ZOOKEEPER_PATH_TEST = "zookeeper PATH : /test";
     public static final String CONNECT_STRING = "127.0.0.1:2181";
     public static final String TEST = "test";
+    public static final String DELIMITER = ",";
 
-    public ZooKeeper zookeeper;
+    public final Logger logger = Logger.getLogger(ZookeeperService.class);
 
-    public Watcher watcher;
 
-    public Watcher getWatcher() {
-        return watcher;
-    }
-
-    public ZooKeeper getZookeeper() {
-        return zookeeper;
-    }
-
-    public void setWatcher(Watcher watcher) {
-        this.watcher = watcher;
-    }
-
-    public void setZookeeper(ZooKeeper zookeeper) {
-        this.zookeeper = zookeeper;
-    }
-
-    private void initService() {
-        watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
-        try {
-            zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        addNodeIfNotExists(PATH,TEST);
-
-    }
-
-    public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) {
+    public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) throws KeeperException, InterruptedException {
         this.watcher = watcher;
         this.zookeeper = zooKeeper;
-        addNodeIfNotExists(PATH,TEST);
+        addNodeIfNotExists(new Node(PATH, TEST));
     }
 
-    public ZookeeperService() {
-        initService();
+    public ZookeeperService() throws InterruptedException, IOException, KeeperException {
+        watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
+        zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
+        addNodeIfNotExists(new Node(PATH, TEST));
     }
 
-
-    public String listNodeData() {
-        List<String> children = new ArrayList<>();
-        try {
-            children = zookeeper.getChildren(PATH, true);
-        } catch (KeeperException | InterruptedException e) {
-            e.printStackTrace();
-        }
+    public String listNodeData() throws KeeperException, InterruptedException {
+        List<String> children = zookeeper.getChildren(PATH, true);
         if (children.isEmpty()) return "";
-        return String.join(",", children);
+        return String.join(DELIMITER, children);
     }
 
-    public boolean deleteNode(String path) {
-        try {
+    public boolean deleteNode(String path) throws KeeperException, InterruptedException {
+        if (validatePath(path)) {
             zookeeper.delete(path, -1);
-        } catch (InterruptedException | KeeperException e) {
-            e.printStackTrace();
+            return true;
         }
-        return true;
+        return false;
     }
 
-    public boolean updateNodeData(String path, String data) {
-        try {
-            zookeeper.setData(path, data.getBytes(), -1);
-        } catch (KeeperException | InterruptedException e) {
-            e.printStackTrace();
+    public boolean updateNodeData(Node node) throws KeeperException, InterruptedException {
+        if (validatePath(node.getPath())) {
+            zookeeper.setData(node.getPath(), node.getContext().getBytes(), -1);
+            return true;
         }
-        return true;
+        return false;
     }
 
-    public void addNodeIfNotExists(String path,String str) {
+    public boolean addNodeIfNotExists(Node node) throws KeeperException, InterruptedException {
         Stat stat = null;
-        try {
-            stat = zookeeper.exists(path, true);
-            if (stat == null) {
-                addNodeData(path, str);
-            }
-        } catch (KeeperException | InterruptedException e) {
-            e.printStackTrace();
+        stat = zookeeper.exists(node.getPath(), true);
+        if (stat == null || validatePath(node.getPath())) {
+            addNodeData(node.getPath(), node.getContext());
+            return true;
         }
+        return false;
     }
 
-    private boolean addNodeData(String path, String data) {
-        try {
-            zookeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        } catch (KeeperException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return true;
+    private void addNodeData(String path, String data) throws KeeperException, InterruptedException {
+        zookeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+    }
+
+    private boolean validatePath(String path) {
+        return path.matches("^(?:[^\\\\\\?\\/\\*\\|<>:\"]+\\\\)+$");
     }
 
 }

@@ -1,5 +1,6 @@
 package com.exampleAPI.zooKeeperAPI.controller;
 
+import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.service.ZookeeperService;
 import org.apache.zookeeper.ZooKeeper;
 import org.junit.Before;
@@ -23,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -31,11 +33,11 @@ public class ZookeeperControllerTest {
     public static final String API_NODE_CREATE = "/api/node/create";
     public static final String TEST_TEST_3 = "/test/test3";
     public static final String TEST_3 = "test3";
-    public static final String TEST_0 = "test0";
     public static final String TEST_TEST_3_TEST_3 = "/test/test3:test3";
     public static final String API_NODE_UPDATE = "/api/node/update";
     public static final String API_NODE_GET = "/api/node/get";
     public static final String API_NODE_DELETE = "/api/node/delete";
+
     @MockBean
     private ZookeeperService zookeeperService;
 
@@ -49,7 +51,7 @@ public class ZookeeperControllerTest {
                 .contentType(MediaType.ALL))
                 .andExpect(status().isOk());
         verify(zookeeperService,times(1))
-                .addNodeIfNotExists(TEST_TEST_3, TEST_3);
+                .addNodeIfNotExists(new Node(TEST_TEST_3, TEST_3));
 
     }
 
@@ -60,7 +62,7 @@ public class ZookeeperControllerTest {
                 .contentType(MediaType.ALL))
                 .andExpect(status().isOk());
         verify(zookeeperService,times(1))
-                .updateNodeData(TEST_TEST_3,TEST_3);
+                .updateNodeData(new Node(TEST_TEST_3,TEST_3));
     }
 
     @Test

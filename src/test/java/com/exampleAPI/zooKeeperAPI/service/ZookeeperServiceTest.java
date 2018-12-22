@@ -1,5 +1,6 @@
 package com.exampleAPI.zooKeeperAPI.service;
 
+import com.exampleAPI.zooKeeperAPI.model.Node;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.Watcher;
@@ -20,8 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
-@RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
+
 public class ZookeeperServiceTest {
 
     public static final String TEST_TEST_3 = "/test/test3";
@@ -31,25 +31,28 @@ public class ZookeeperServiceTest {
 
     public ZooKeeper zk;
 
+    public Node node;
+
     public ZookeeperService zookeeperService;
 
     @Before
-    public void setUp() {
+    public void setUp() throws KeeperException, InterruptedException {
         watcher = mock(Watcher.class);
         zk = mock(ZooKeeper.class);
         zookeeperService = new ZookeeperService(watcher, zk);
+        node = new Node(TEST_TEST_3, TEST_3);
     }
 
     @Test
     public void zkCreate() throws KeeperException, InterruptedException {
-        zookeeperService.addNodeIfNotExists(TEST_TEST_3, TEST_3);
+        zookeeperService.addNodeIfNotExists(node);
         verify(zk).create(TEST_TEST_3,
                 TEST_3.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
     }
 
     @Test
     public void zkUpdate() throws KeeperException, InterruptedException {
-        zookeeperService.updateNodeData(TEST_TEST_3, TEST_3);
+        zookeeperService.updateNodeData(node);
         verify(zk, times(1)).setData(TEST_TEST_3, TEST_3.getBytes(), -1);
     }
 
