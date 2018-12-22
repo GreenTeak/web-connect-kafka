@@ -34,13 +34,11 @@ public class ZookeeperService {
     public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) throws KeeperException, InterruptedException {
         this.watcher = watcher;
         this.zookeeper = zooKeeper;
-        addNodeIfNotExists(new Node(PATH, TEST));
     }
 
     public ZookeeperService() throws InterruptedException, IOException, KeeperException {
         watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
         zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
-        addNodeIfNotExists(new Node(PATH, TEST));
     }
 
     public String listNodeData() throws KeeperException, InterruptedException {
@@ -49,27 +47,19 @@ public class ZookeeperService {
         return String.join(DELIMITER, children);
     }
 
-    public boolean deleteNode(String path) throws KeeperException, InterruptedException {
-        if (validatePath(path)) {
-            zookeeper.delete(path, -1);
-            return true;
-        }
-        return false;
+    public void deleteNode(String path) throws KeeperException, InterruptedException {
+        zookeeper.delete(path, -1);
     }
 
-    public boolean updateNodeData(Node node) throws KeeperException, InterruptedException {
-        if (validatePath(node.getPath())) {
-            zookeeper.setData(node.getPath(), node.getContext().getBytes(), -1);
-            return true;
-        }
-        return false;
+    public void updateNodeData(Node node) throws KeeperException, InterruptedException {
+        zookeeper.setData(node.getPath(), node.getContent().getBytes(), -1);
     }
 
     public boolean addNodeIfNotExists(Node node) throws KeeperException, InterruptedException {
         Stat stat = null;
         stat = zookeeper.exists(node.getPath(), true);
-        if (stat == null || validatePath(node.getPath())) {
-            addNodeData(node.getPath(), node.getContext());
+        if (stat == null) {
+            addNodeData(node.getPath(), node.getContent());
             return true;
         }
         return false;
@@ -78,9 +68,4 @@ public class ZookeeperService {
     private void addNodeData(String path, String data) throws KeeperException, InterruptedException {
         zookeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
     }
-
-    private boolean validatePath(String path) {
-        return path.matches("^(?:[^\\\\\\?\\/\\*\\|<>:\"]+\\\\)+$");
-    }
-
 }

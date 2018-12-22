@@ -1,15 +1,29 @@
 package com.exampleAPI.zooKeeperAPI.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 @Component
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
 public class Node {
     private String path;
-    private String context;
+
+    private String content;
+
+    public Node() {
+    }
+
+    public Node(String path, String content) {
+        this.path = path;
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getPath() {
+        return path;
+    }
 }

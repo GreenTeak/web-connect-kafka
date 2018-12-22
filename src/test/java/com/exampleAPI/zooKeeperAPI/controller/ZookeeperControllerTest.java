@@ -2,6 +2,10 @@ package com.exampleAPI.zooKeeperAPI.controller;
 
 import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.service.ZookeeperService;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import net.minidev.json.JSONObject;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,13 +35,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class ZookeeperControllerTest {
 
-    public static final String API_NODE_CREATE = "/api/node/create";
-    public static final String TEST_TEST_3 = "/test/test3";
-    public static final String TEST_3 = "test3";
-    public static final String TEST_TEST_3_TEST_3 = "/test/test3:test3";
-    public static final String API_NODE_UPDATE = "/api/node/update";
-    public static final String API_NODE_GET = "/api/node/get";
-    public static final String API_NODE_DELETE = "/api/node/delete";
+    public static final String API_NODE = "/api/node";
+    public static final String TEST_TEST_3 = "/test2";
+    public static final String TEST_3 = "test2";
+    public static final String JSON_CONTENT = "{\"path\":\"/test2\",\"context\":\"test2\"}";
+    public static final String TEST_1 = "test2";
 
     @MockBean
     private ZookeeperService zookeeperService;
@@ -44,42 +47,60 @@ public class ZookeeperControllerTest {
     @Autowired
     protected MockMvc mvc;
 
+    private Node node = new Node(TEST_TEST_3, TEST_3);
+
+    @Before
+    public void setUp() throws KeeperException, InterruptedException {
+        when(zookeeperService.listNodeData()).thenReturn(TEST_1);
+    }
+
     @Test
-    public void zkCreate() throws Exception {
-        mvc.perform(post(API_NODE_CREATE)
-                .content(TEST_TEST_3_TEST_3)
+    public void shouldBeReturnStatusIsCreatedWhenAddNode() throws Exception {
+        Node node = new Node("/test2","test2");
+
+        mvc.perform(post(API_NODE)
+                .content(JSON_CONTENT)
                 .contentType(MediaType.ALL))
-                .andExpect(status().isOk());
-        verify(zookeeperService,times(1))
-                .addNodeIfNotExists(new Node(TEST_TEST_3, TEST_3));
+                .andExpect(status().isCreated());
+        verify(zookeeperService, times(1))
+                .addNodeIfNotExists(node);
 
     }
 
     @Test
-    public void zkUpdate() throws Exception {
-        mvc.perform(put(API_NODE_UPDATE)
-                .content(TEST_TEST_3_TEST_3)
+    public void shouldBeReturnStatusIsAcceptedWhenUpdateNode() throws Exception {
+        Node node = new Node("/test2","test2");
+
+        mvc.perform(put(API_NODE)
+                .content(JSON_CONTENT)
                 .contentType(MediaType.ALL))
-                .andExpect(status().isOk());
-        verify(zookeeperService,times(1))
-                .updateNodeData(new Node(TEST_TEST_3,TEST_3));
+                .andExpect(status().isAccepted());
+        verify(zookeeperService, times(1))
+                .updateNodeData(node);
     }
 
     @Test
-    public void zkGet() throws Exception {
-        mvc.perform(get(API_NODE_GET))
-            .andExpect(status().isOk());
-        verify(zookeeperService,times(1))
+    public void shouldBeReturnNodeListWhenGetNode() throws Exception {
+        DocumentContext response = JsonPath.parse(mvc.perform(get(API_NODE))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString());
+
+        verify(zookeeperService, times(1))
                 .listNodeData();
+
+        assertEquals(response.toString(), TEST_1);
+
     }
 
     @Test
-    public void zkDelete() throws Exception {
-        mvc.perform(delete(API_NODE_DELETE)
+    public void shouldBeReturnStatusIsAcceptedWhenDeleteNode() throws Exception {
+
+        mvc.perform(delete(API_NODE)
                 .content(TEST_TEST_3)
                 .contentType(MediaType.ALL))
-                .andExpect(status().isOk());
-        verify(zookeeperService,times(1))
+                .andExpect(status().isAccepted());
+
+        verify(zookeeperService, times(1))
                 .deleteNode(TEST_TEST_3);
     }
 }
