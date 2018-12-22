@@ -8,11 +8,13 @@ import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.UsesSunHttpServer;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 
@@ -23,6 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 @Api(value = "/api/node")
 public class ZookeeperController {
 
+    public static final String REQUEST_IS_WRONG = "request is wrong";
+    public static final String DELETE_IS_SUCCESS = "delete is success";
+    public static final String UPDATE_IS_SUCCESS = "update is success";
     public final Logger logger = Logger.getLogger(ZookeeperController.class);
 
     @Autowired
@@ -33,9 +38,9 @@ public class ZookeeperController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(zookeeperService.listNodeData());
         } catch (KeeperException | InterruptedException e) {
-            logger.error("request is wrong");
+            logger.error(REQUEST_IS_WRONG);
         }
-        return new ResponseEntity<>("request is wrong", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(REQUEST_IS_WRONG, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping
@@ -54,10 +59,10 @@ public class ZookeeperController {
         try {
             zookeeperService.deleteNode(path);
         } catch (KeeperException | InterruptedException e) {
-            logger.error(String.format("create %s is failure", path));
+            logger.error(String.format("delete %s is failure", path));
             return new ResponseEntity<>(path, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("delete is success", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(DELETE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
     @PutMapping
@@ -68,6 +73,6 @@ public class ZookeeperController {
             logger.error(String.format("update %s is failure", input.getPath()));
             return new ResponseEntity<>(input.getPath(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("update is success", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(UPDATE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 }
