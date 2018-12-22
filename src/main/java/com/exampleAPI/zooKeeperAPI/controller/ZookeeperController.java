@@ -2,26 +2,22 @@ package com.exampleAPI.zooKeeperAPI.controller;
 
 import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.service.ZookeeperService;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.UsesSunHttpServer;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@Slf4j
 @Api(value = "/api/node")
 public class ZookeeperController {
 

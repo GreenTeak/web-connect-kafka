@@ -1,6 +1,9 @@
 package com.exampleAPI.zooKeeperAPI.service;
 
+import com.exampleAPI.zooKeeperAPI.controller.ZookeeperController;
 import com.exampleAPI.zooKeeperAPI.model.Node;
+import com.exampleAPI.zooKeeperAPI.model.User;
+import com.exampleAPI.zooKeeperAPI.support.JsonAndByte;
 import lombok.Data;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -8,8 +11,10 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -18,6 +23,9 @@ public class ZookeeperService {
 
     public ZooKeeper zookeeper;
     public Watcher watcher;
+
+    @Autowired
+    public JsonAndByte jsonAndByte;
 
     public final static String PATH = "/test";
     public static final String ZOOKEEPER_PATH_TEST = "zookeeper PATH : /test";
@@ -30,6 +38,12 @@ public class ZookeeperService {
         this.watcher = watcher;
         this.zookeeper = zooKeeper;
     }
+    public ZookeeperService() throws InterruptedException, IOException, KeeperException {
+        watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
+        zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
+        addNodeIfNotExists(new Node(PATH,TEST));
+    }
+
 
     public String listNodeData() throws KeeperException, InterruptedException {
         List<String> children = zookeeper.getChildren(PATH, true);
@@ -52,6 +66,10 @@ public class ZookeeperService {
             return true;
         }
         return false;
+    }
+    public User getData(String path) throws KeeperException, InterruptedException {
+        byte[] data = zookeeper.getData(path, false, null);
+        return jsonAndByte.toObject(data);
     }
 
     private void addNodeData(String path, String data) throws KeeperException, InterruptedException {
