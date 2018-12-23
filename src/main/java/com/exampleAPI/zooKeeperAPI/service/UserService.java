@@ -44,7 +44,7 @@ public class UserService {
     public boolean addUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
         String userJson = jsonAndObject.ObjectToJson(user);
         Node node = new Node(generatePath(user), userJson);
-        if(!validateUserExistOrNot(user)) {
+        if(!validateUserExistOrNot(user.getEmail())) {
             zookeeperService.addNodeIfNotExists(node);
             return true;
         }
@@ -52,19 +52,14 @@ public class UserService {
     }
 
     public Integer userLogin(String email, String password) throws KeeperException, InterruptedException, IOException {
-        Stat stat = zookeeperService.getStat(PATH + email);
+        //Stat stat = zookeeperService.getStat(PATH + email);
+        boolean isExistNode = validateUserExistOrNot(email);
         User user = zookeeperService.getData(PATH + email);
-
-        if (stat == null || user != null || !user.getPassword().equals(password)) {
+        if (!isExistNode || user != null || !user.getPassword().equals(password)) {
             logger.error(PASSWORD_IS_WRONG_OR_NOT_HAVE_THIS_USER);
             return -1;
         }
         return user.getAge();
-    }
-
-    private boolean validateUserExistOrNot(User user) throws KeeperException, InterruptedException {
-        String nodeList = zookeeperService.listNodeData();
-        return nodeList.contains(user.getEmail());
     }
 
     public void updateUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
@@ -75,5 +70,10 @@ public class UserService {
 
     public void deleteUser(String email) throws KeeperException, InterruptedException {
         zookeeperService.deleteNode(PATH + email);
+    }
+
+    private boolean validateUserExistOrNot(String email) throws KeeperException, InterruptedException {
+        String nodeList = zookeeperService.listNodeData();
+        return nodeList.contains(email);
     }
 }

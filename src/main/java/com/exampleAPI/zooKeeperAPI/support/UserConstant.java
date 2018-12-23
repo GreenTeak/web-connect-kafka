@@ -18,6 +18,7 @@ public class UserConstant {
     public static final String AGE = "age";
 
     public static final String PATH = "/test/";
+    public static final String DEFAULT_TEST = "/test";
     public static final String PASSWORD_IS_WRONG_OR_NOT_HAVE_THIS_USER = "password is wrong or don't have this user";
     public static final String ZOOKEEPER_PATH_TEST = "zookeeper PATH : /test";
     public static final String CONNECT_STRING = "127.0.0.1:2181";

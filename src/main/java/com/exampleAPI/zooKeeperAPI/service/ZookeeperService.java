@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.CONNECT_STRING;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DEFAULT_TEST;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELIMITER;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PATH;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.TEST;
@@ -27,7 +28,6 @@ import static com.exampleAPI.zooKeeperAPI.support.UserConstant.ZOOKEEPER_PATH_TE
 @Data
 public class ZookeeperService {
 
-    public static final String DEFAULT_TEST = "/test";
     @Autowired
     public JsonAndObject jsonAndObject;
 
