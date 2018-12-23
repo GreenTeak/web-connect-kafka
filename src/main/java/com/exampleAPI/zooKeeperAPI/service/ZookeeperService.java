@@ -27,6 +27,7 @@ import static com.exampleAPI.zooKeeperAPI.support.UserConstant.ZOOKEEPER_PATH_TE
 @Data
 public class ZookeeperService {
 
+    public static final String DEFAULT_TEST = "/test";
     @Autowired
     public JsonAndObject jsonAndObject;
 
@@ -46,7 +47,7 @@ public class ZookeeperService {
 
 
     public String listNodeData() throws KeeperException, InterruptedException {
-        List<String> children = zookeeper.getChildren(PATH, true);
+        List<String> children = zookeeper.getChildren(DEFAULT_TEST, true);
         if (children.isEmpty()) return "";
         return String.join(DELIMITER, children);
     }

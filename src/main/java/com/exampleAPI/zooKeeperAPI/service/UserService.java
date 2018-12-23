@@ -41,10 +41,14 @@ public class UserService {
         return PATH + user.getEmail();
     }
 
-    public void addUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
+    public boolean addUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
         String userJson = jsonAndObject.ObjectToJson(user);
         Node node = new Node(generatePath(user), userJson);
-        zookeeperService.addNodeIfNotExists(node);
+        if(!validateUserExistOrNot(user)) {
+            zookeeperService.addNodeIfNotExists(node);
+            return true;
+        }
+        return false;
     }
 
     public Integer userLogin(String email, String password) throws KeeperException, InterruptedException, IOException {
@@ -56,6 +60,11 @@ public class UserService {
             return -1;
         }
         return user.getAge();
+    }
+
+    private boolean validateUserExistOrNot(User user) throws KeeperException, InterruptedException {
+        String nodeList = zookeeperService.listNodeData();
+        return nodeList.contains(user.getEmail());
     }
 
     public void updateUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
