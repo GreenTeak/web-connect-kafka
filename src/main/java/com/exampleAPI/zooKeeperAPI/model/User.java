@@ -2,7 +2,6 @@ package com.exampleAPI.zooKeeperAPI.model;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;

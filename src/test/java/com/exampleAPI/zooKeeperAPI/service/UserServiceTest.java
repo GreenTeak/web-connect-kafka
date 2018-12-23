@@ -54,11 +54,11 @@ public class UserServiceTest {
         assertEquals(test1.intValue(), -1);
     }
 
-    @Test
-    public void shouldBeReturnAgeWhenPasswordIsRight() throws KeeperException, InterruptedException, IOException {
-        Integer test1 = userService.userLogin("test@qq.com", "test");
-        assertEquals(test1.intValue(), 12);
-    }
+//    @Test
+//    public void shouldBeReturnAgeWhenPasswordIsRight() throws KeeperException, InterruptedException, IOException {
+//        Integer test1 = userService.userLogin("test@qq.com", "test");
+//        assertEquals(test1.intValue(), 12);
+//    }
 
     @Test
     public void shouldBeReturnNegativeWhenEmailIsWrong() throws KeeperException, InterruptedException, IOException {

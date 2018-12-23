@@ -10,19 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static com.exampleAPI.zooKeeperAPI.controller.ZookeeperController.DELETE_IS_SUCCESS;
-import static com.exampleAPI.zooKeeperAPI.controller.ZookeeperController.REQUEST_IS_WRONG;
-import static com.exampleAPI.zooKeeperAPI.controller.ZookeeperController.UPDATE_IS_SUCCESS;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_SUCCESS;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.REQUEST_IS_WRONG;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_IS_SUCCESS;
 
 @RestController
 @Api(value = "/api/user")
@@ -37,14 +37,14 @@ public class UserController {
     public ResponseEntity<String> addUser(@RequestBody User user) {
         try {
             userService.addUser(user);
-            return ResponseEntity.status(HttpStatus.OK).body(user.getEmail());
+            return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmail());
         } catch (JsonProcessingException | KeeperException | InterruptedException e) {
             logger.error(REQUEST_IS_WRONG);
         }
         return new ResponseEntity<>(REQUEST_IS_WRONG, HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value = "/api/user/login")
+    @GetMapping(value = "/api/user/login")
     public ResponseEntity<String> userLogin(@RequestParam(value = "email") String email,
                                             @RequestParam(value = "password") String password) {
         try {
@@ -72,7 +72,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/api/user/delete")
-    public ResponseEntity<String> deleteMapping(@RequestParam(value = "email") String email) {
+    public ResponseEntity<String> deleteMapping(@RequestParam String email) {
         try {
             userService.deleteUser(email);
         } catch (KeeperException | InterruptedException e) {

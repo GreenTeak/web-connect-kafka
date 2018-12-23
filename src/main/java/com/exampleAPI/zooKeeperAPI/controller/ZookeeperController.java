@@ -17,13 +17,13 @@ import io.swagger.annotations.Api;
 
 import javax.servlet.http.HttpServletResponse;
 
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_SUCCESS;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.REQUEST_IS_WRONG;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_IS_SUCCESS;
+
 @RestController
 @Api(value = "/api/node")
 public class ZookeeperController {
-
-    public static final String REQUEST_IS_WRONG = "request is wrong";
-    public static final String DELETE_IS_SUCCESS = "delete is success";
-    public static final String UPDATE_IS_SUCCESS = "update is success";
 
     public final Logger logger = Logger.getLogger(ZookeeperController.class);
 
