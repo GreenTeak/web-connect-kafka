@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static com.exampleAPI.zooKeeperAPI.service.ZookeeperService.PATH;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PATH;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

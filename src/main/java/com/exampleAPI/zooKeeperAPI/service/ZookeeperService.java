@@ -2,7 +2,7 @@ package com.exampleAPI.zooKeeperAPI.service;
 
 import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.model.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.exampleAPI.zooKeeperAPI.support.JsonAndObject;
 import lombok.Data;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -10,35 +10,38 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.CONNECT_STRING;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELIMITER;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PATH;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.TEST;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.ZOOKEEPER_PATH_TEST;
 
 
 @Service
 @Data
 public class ZookeeperService {
 
+    @Autowired
+    public JsonAndObject jsonAndObject;
+
     public ZooKeeper zookeeper;
     public Watcher watcher;
 
-
-    public final static String PATH = "/test";
-    public static final String ZOOKEEPER_PATH_TEST = "zookeeper PATH : /test";
-    public static final String CONNECT_STRING = "127.0.0.1:2181";
-    public static final String TEST = "test";
-    public static final String DELIMITER = ",";
-
-
-    public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper){
+    public ZookeeperService(Watcher watcher, ZooKeeper zooKeeper) {
         this.watcher = watcher;
         this.zookeeper = zooKeeper;
     }
+
     public ZookeeperService() throws InterruptedException, IOException, KeeperException {
         watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
         zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
-        addNodeIfNotExists(new Node(PATH,TEST));
+        addNodeIfNotExists(new Node(PATH, TEST));
     }
 
 
@@ -71,9 +74,7 @@ public class ZookeeperService {
 
     public User getData(String path) throws KeeperException, InterruptedException, IOException {
         byte[] data = zookeeper.getData(path, false, null);
-        String s = new String(data);
-        ObjectMapper mapper = new ObjectMapper();
-        User user = mapper.readValue(s, User.class);
+        User user = jsonAndObject.JsonToObject(new String(data));
         return user;
     }
 

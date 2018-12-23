@@ -13,16 +13,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import io.swagger.annotations.Api;
 
 import javax.servlet.http.HttpServletResponse;
 
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_NODE;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.CREATE_IS_FAILURE;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_SUCCESS;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_FAILURE;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.REQUEST_IS_WRONG;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_IS_SUCCESS;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_S_IS_FAILURE;
 
 @RestController
-@Api(value = "/api/node")
 public class ZookeeperController {
 
     public final Logger logger = Logger.getLogger(ZookeeperController.class);
@@ -30,7 +32,7 @@ public class ZookeeperController {
     @Autowired
     public ZookeeperService zookeeperService;
 
-    @GetMapping
+    @GetMapping(value = API_NODE)
     public ResponseEntity<String> zkGet() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(zookeeperService.listNodeData());
@@ -40,34 +42,34 @@ public class ZookeeperController {
         return new ResponseEntity<>(REQUEST_IS_WRONG, HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping
+    @PostMapping(value = API_NODE)
     public void zkCreate(@RequestBody Node input, HttpServletResponse response) {
         try {
             zookeeperService.addNodeIfNotExists(input);
             response.setStatus(201);
         } catch (KeeperException | InterruptedException e) {
-            logger.error(String.format("create %s is failure", input.getPath()));
+            logger.error(String.format(CREATE_IS_FAILURE, input.getPath()));
             response.setStatus(400);
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = API_NODE)
     public ResponseEntity<String> zkDelete(@RequestBody String path) {
         try {
             zookeeperService.deleteNode(path);
         } catch (KeeperException | InterruptedException e) {
-            logger.error(String.format("delete %s is failure", path));
+            logger.error(String.format(DELETE_IS_FAILURE, path));
             return new ResponseEntity<>(path, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(DELETE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
-    @PutMapping
+    @PutMapping(value = API_NODE)
     public ResponseEntity<String> zkUpdate(@RequestBody Node input) {
         try {
             zookeeperService.updateNodeData(input);
         } catch (KeeperException | InterruptedException e) {
-            logger.error(String.format("update %s is failure", input.getPath()));
+            logger.error(String.format(UPDATE_S_IS_FAILURE, input.getPath()));
             return new ResponseEntity<>(input.getPath(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(UPDATE_IS_SUCCESS, HttpStatus.ACCEPTED);

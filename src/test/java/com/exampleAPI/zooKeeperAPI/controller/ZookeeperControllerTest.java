@@ -84,7 +84,7 @@ public class ZookeeperControllerTest {
         verify(zookeeperService, times(1))
                 .listNodeData();
 
-        assertEquals(contentAsString,TEST2);
+        assertEquals(contentAsString, TEST2);
 
     }
 

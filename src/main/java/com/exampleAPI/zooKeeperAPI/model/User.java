@@ -6,16 +6,20 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.AGE;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.EMAIL;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PASSWORD;
+
 @Component
 public class User {
 
-    @JsonProperty("email")
+    @JsonProperty(EMAIL)
     private String email;
 
-    @JsonProperty("password")
+    @JsonProperty(PASSWORD)
     private String password;
 
-    @JsonProperty("age")
+    @JsonProperty(AGE)
     private Integer age;
 
     public User(String email, String password, Integer age) {

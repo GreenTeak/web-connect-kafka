@@ -2,6 +2,7 @@ package com.exampleAPI.zooKeeperAPI.service;
 
 import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.model.User;
+import com.exampleAPI.zooKeeperAPI.support.JsonAndObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -16,6 +17,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PASSWORD_IS_WRONG_OR_NOT_HAVE_THIS_USER;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PATH;
+
+
 @Service
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,14 +30,10 @@ public class UserService {
     @Autowired
     public ZookeeperService zookeeperService;
 
-    public static final String PATH = "/test/";
-    public ObjectMapper mapper = new ObjectMapper();
-
-    public ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-
+    @Autowired
+    public JsonAndObject jsonAndObject;
 
     public final Logger logger = Logger.getLogger(UserService.class);
-
 
     public UserService(ZookeeperService zookeeperService) {
         this.zookeeperService = zookeeperService;
@@ -43,7 +44,7 @@ public class UserService {
     }
 
     public void addUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
-        String userJson = ow.writeValueAsString(user);
+        String userJson = jsonAndObject.ObjectToJson(user);
         Node node = new Node(generatePath(user), userJson);
         zookeeperService.addNodeIfNotExists(node);
     }
@@ -53,14 +54,14 @@ public class UserService {
         User user = zookeeperService.getData(PATH + email);
 
         if (stat == null || user != null || !user.getPassword().equals(password)) {
-            logger.error("password is wrong or don't have this user");
+            logger.error(PASSWORD_IS_WRONG_OR_NOT_HAVE_THIS_USER);
             return -1;
         }
         return user.getAge();
     }
 
     public void updateUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
-        String userJson = ow.writeValueAsString(user);
+        String userJson = jsonAndObject.ObjectToJson(user);
         Node node = new Node(generatePath(user), userJson);
         zookeeperService.updateNodeData(node);
     }
