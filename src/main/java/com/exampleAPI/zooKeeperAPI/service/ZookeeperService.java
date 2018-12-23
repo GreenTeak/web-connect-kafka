@@ -1,9 +1,10 @@
 package com.exampleAPI.zooKeeperAPI.service;
 
-import com.exampleAPI.zooKeeperAPI.controller.ZookeeperController;
 import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.model.User;
 import com.exampleAPI.zooKeeperAPI.support.JsonAndByte;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jdk.nashorn.internal.parser.JSONParser;
 import lombok.Data;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -11,11 +12,11 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+
 
 @Service
 @Data
@@ -24,8 +25,6 @@ public class ZookeeperService {
     public ZooKeeper zookeeper;
     public Watcher watcher;
 
-    @Autowired
-    public JsonAndByte jsonAndByte;
 
     public final static String PATH = "/test";
     public static final String ZOOKEEPER_PATH_TEST = "zookeeper PATH : /test";
@@ -60,16 +59,24 @@ public class ZookeeperService {
     }
 
     public boolean addNodeIfNotExists(Node node) throws KeeperException, InterruptedException {
-        Stat stat = zookeeper.exists(node.getPath(), true);
+        Stat stat = getStat(node.getPath());
         if (stat == null) {
             addNodeData(node.getPath(), node.getContent());
             return true;
         }
         return false;
     }
-    public User getData(String path) throws KeeperException, InterruptedException {
+
+    public Stat getStat(String path) throws KeeperException, InterruptedException {
+        return zookeeper.exists(path, true);
+    }
+
+    public User getData(String path) throws KeeperException, InterruptedException, IOException {
         byte[] data = zookeeper.getData(path, false, null);
-        return jsonAndByte.toObject(data);
+        String s = new String(data);
+        ObjectMapper mapper = new ObjectMapper();
+        User user = mapper.readValue(s, User.class);
+        return user;
     }
 
     private void addNodeData(String path, String data) throws KeeperException, InterruptedException {

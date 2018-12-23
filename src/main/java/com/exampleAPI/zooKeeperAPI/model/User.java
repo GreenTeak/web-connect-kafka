@@ -1,13 +1,44 @@
 package com.exampleAPI.zooKeeperAPI.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 public class User {
+
+    @JsonProperty("email")
     private String email;
+
+    @JsonProperty("password")
     private String password;
+
+    @JsonProperty("age")
     private Integer age;
+
+    public User(String email, String password, Integer age) {
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(getEmail(), user.getEmail()) &&
+                Objects.equals(getPassword(), user.getPassword()) &&
+                Objects.equals(getAge(), user.getAge());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail(), getPassword(), getAge());
+    }
 
     public void setEmail(String email) {
         this.email = email;

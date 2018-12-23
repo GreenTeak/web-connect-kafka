@@ -49,7 +49,6 @@ public class ZookeeperControllerTest {
     @Before
     public void setUp() throws KeeperException, InterruptedException, JsonProcessingException {
         when(zookeeperService.listNodeData()).thenReturn(TEST2);
-        Node node = new Node(TEST2_PATH, TEST2);
         ObjectMapper mapper = new ObjectMapper();
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         requestJson = ow.writeValueAsString(node);

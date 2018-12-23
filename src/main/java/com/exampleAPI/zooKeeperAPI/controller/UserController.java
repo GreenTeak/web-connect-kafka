@@ -4,15 +4,25 @@ import com.exampleAPI.zooKeeperAPI.model.User;
 import com.exampleAPI.zooKeeperAPI.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
+import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+import static com.exampleAPI.zooKeeperAPI.controller.ZookeeperController.DELETE_IS_SUCCESS;
+import static com.exampleAPI.zooKeeperAPI.controller.ZookeeperController.REQUEST_IS_WRONG;
+import static com.exampleAPI.zooKeeperAPI.controller.ZookeeperController.UPDATE_IS_SUCCESS;
 
 @RestController
 @Api(value = "/api/user")
@@ -21,40 +31,55 @@ public class UserController {
     @Autowired
     public UserService userService;
 
-    @GetMapping(value = "/api/user")
-    public void addUser(@RequestBody User user) {
+    public final Logger logger = Logger.getLogger(UserController.class);
+
+    @PostMapping(value = "/api/user/register")
+    public ResponseEntity<String> addUser(@RequestBody User user) {
         try {
             userService.addUser(user);
+            return ResponseEntity.status(HttpStatus.OK).body(user.getEmail());
         } catch (JsonProcessingException | KeeperException | InterruptedException e) {
-            e.printStackTrace();
+            logger.error(REQUEST_IS_WRONG);
         }
+        return new ResponseEntity<>(REQUEST_IS_WRONG, HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value = "/api/user")
-    public void userLogin(@RequestParam String email, @RequestParam String password) {
+    @PostMapping(value = "/api/user/login")
+    public ResponseEntity<String> userLogin(@RequestParam(value = "email") String email,
+                                            @RequestParam(value = "password") String password) {
         try {
-            userService.userLogin(email, password);
+            Integer age = userService.userLogin(email, password);
+            if (age != -1) {
+                return ResponseEntity.status(HttpStatus.OK).body(age.toString());
+            }
         } catch (KeeperException | InterruptedException e) {
+            logger.error("login is wrong");
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        return new ResponseEntity<>(REQUEST_IS_WRONG, HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping(value = "/api/user")
-    public void updateUser(@RequestBody User user) {
+    @PutMapping(value = "/api/user/update")
+    public ResponseEntity<String> updateUser(@RequestBody User user) {
         try {
             userService.updateUser(user);
         } catch (JsonProcessingException | KeeperException | InterruptedException e) {
-            e.printStackTrace();
+            logger.error(String.format("update %s is failure", user.getEmail()));
+            return new ResponseEntity<>(user.getEmail(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(UPDATE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping(value = "/api/user")
-    public void deleteMapping(@RequestParam String email) {
+    @DeleteMapping(value = "/api/user/delete")
+    public ResponseEntity<String> deleteMapping(@RequestParam(value = "email") String email) {
         try {
             userService.deleteUser(email);
         } catch (KeeperException | InterruptedException e) {
-            e.printStackTrace();
+            logger.error(String.format("delete %s is failure", email));
+            return new ResponseEntity<>(email, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(DELETE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
 }

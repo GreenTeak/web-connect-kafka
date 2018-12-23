@@ -1,25 +1,46 @@
 package com.exampleAPI.zooKeeperAPI.support;
 
-import com.exampleAPI.zooKeeperAPI.model.User;
-import org.springframework.stereotype.Component;
-
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-@Component
+
 public class JsonAndByte {
-    public User toObject(byte[] bytes) {
-        User user = null;
+    public byte[] toByteArray (Object obj) {
+        byte[] bytes = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            user = (User) objectInputStream.readObject();
-            byteArrayInputStream.close();// 关闭输入流
-            objectInputStream.close();// 关闭输入流
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(obj);
+            oos.flush();
+            bytes = bos.toByteArray ();
+            oos.close();
+            bos.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        return user;
+        return bytes;
     }
+
+    /**
+     * 数组转对象
+     * @param bytes
+     * @return
+     */
+    public Object toObject (byte[] bytes) {
+        Object obj = null;
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream (bytes);
+            ObjectInputStream ois = new ObjectInputStream (bis);
+            obj = ois.readObject();
+            ois.close();
+            bis.close();
+        } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return obj;
+    }
+
 }
