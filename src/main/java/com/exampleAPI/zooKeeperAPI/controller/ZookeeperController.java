@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_NODE;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.CREATE_IS_SUCCESS;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_SUCCESS;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.INTERRUPTED_EXCEPTION;
@@ -34,31 +33,31 @@ public class ZookeeperController {
     @Autowired
     public ZookeeperService zookeeperService;
 
-    @GetMapping(value = API_NODE)
+    @GetMapping(value = "/api/node")
     public ResponseEntity<String> zkGet() throws KeeperException, InterruptedException {
         return ResponseEntity.status(HttpStatus.OK).body(zookeeperService.listNodeData());
     }
 
-    @PostMapping(value = API_NODE)
+    @PostMapping(value = "/api/node")
     public ResponseEntity<String> zkCreate(@RequestBody Node input) throws KeeperException, InterruptedException {
         zookeeperService.addNodeIfNotExists(input);
         return new ResponseEntity<>(CREATE_IS_SUCCESS, HttpStatus.ACCEPTED);
 
     }
 
-    @DeleteMapping(value = API_NODE)
+    @DeleteMapping(value = "/api/node")
     public ResponseEntity<String> zkDelete(@RequestBody String path) throws KeeperException, InterruptedException {
         zookeeperService.deleteNode(path);
         return new ResponseEntity<>(DELETE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
-    @PutMapping(value = API_NODE)
+    @PutMapping(value = "/api/node")
     public ResponseEntity<String> zkUpdate(@RequestBody Node input) throws KeeperException, InterruptedException {
         zookeeperService.updateNodeData(input);
         return new ResponseEntity<>(UPDATE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(KeeperException.class)
     public @ResponseBody
     Map<String, Object> keeperExceptionHandler(KeeperException keeperException) {
         logger.error(keeperException.getLocalizedMessage());
@@ -67,7 +66,7 @@ public class ZookeeperController {
         return model;
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(InterruptedException.class)
     public @ResponseBody
     Map<String, Object> InterruptedExceptionHandler(InterruptedException interruptedException) {
         logger.error(interruptedException.getLocalizedMessage());

@@ -44,13 +44,13 @@ public class UserController {
 
     public final Logger logger = Logger.getLogger(UserController.class);
 
-    @PostMapping(value = API_USER_REGISTER)
+    @PostMapping(value = "/api/user/register")
     public ResponseEntity<String> addUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
         userService.addUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmail());
     }
 
-    @GetMapping(value = API_USER_LOGIN)
+    @GetMapping(value = "/api/user/login")
     public ResponseEntity<String> userLogin(@RequestParam(value = EMAIL) String email,
                                             @RequestParam(value = PASSWORD) String password) throws InterruptedException, IOException, KeeperException {
 
@@ -62,19 +62,19 @@ public class UserController {
         return new ResponseEntity<>(REQUEST_IS_WRONG, HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping(value = API_USER_UPDATE)
+    @PutMapping(value = "/api/user/update")
     public ResponseEntity<String> updateUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
         userService.updateUser(user);
         return new ResponseEntity<>(UPDATE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping(value = API_USER_DELETE)
+    @DeleteMapping(value = "/api/user/delete")
     public ResponseEntity<String> deleteMapping(@RequestParam String email) throws KeeperException, InterruptedException {
         userService.deleteUser(email);
         return new ResponseEntity<>(DELETE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(KeeperException.class)
     public @ResponseBody
     Map<String, Object> keeperExceptionHandler(KeeperException keeperException) {
         logger.error(keeperException.getLocalizedMessage());
@@ -83,7 +83,7 @@ public class UserController {
         return model;
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(InterruptedException.class)
     public @ResponseBody
     Map<String, Object> InterruptedExceptionHandler(InterruptedException interruptedException) {
         logger.error(interruptedException.getLocalizedMessage());
@@ -92,7 +92,7 @@ public class UserController {
         return model;
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(JsonProcessingException.class)
     public @ResponseBody
     Map<String, Object> JsonProcessingExceptionHandler(JsonProcessingException JsonProcessingException) {
         logger.error(JsonProcessingException.getLocalizedMessage());
