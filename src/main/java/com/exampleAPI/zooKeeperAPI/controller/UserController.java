@@ -6,9 +6,11 @@ import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_USER_REGISTER
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_USER_UPDATE;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_SUCCESS;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.EMAIL;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.INTERRUPTED_EXCEPTION;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.JSON_PROCESSING_EXCEPTION;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.KEEPER_EXCEPTION;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PASSWORD;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.REQUEST_IS_WRONG;
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.STATUS;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_IS_SUCCESS;
 
 import com.exampleAPI.zooKeeperAPI.model.User;
@@ -77,7 +79,7 @@ public class UserController {
     Map<String, Object> keeperExceptionHandler(KeeperException keeperException) {
         logger.error(keeperException.getLocalizedMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(STATUS, false);
+        model.put(KEEPER_EXCEPTION, false);
         return model;
     }
 
@@ -86,7 +88,7 @@ public class UserController {
     Map<String, Object> InterruptedExceptionHandler(InterruptedException interruptedException) {
         logger.error(interruptedException.getLocalizedMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(STATUS, false);
+        model.put(INTERRUPTED_EXCEPTION, false);
         return model;
     }
 
@@ -95,7 +97,7 @@ public class UserController {
     Map<String, Object> JsonProcessingExceptionHandler(JsonProcessingException JsonProcessingException) {
         logger.error(JsonProcessingException.getLocalizedMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(STATUS, false);
+        model.put(JSON_PROCESSING_EXCEPTION, false);
         return model;
     }
 

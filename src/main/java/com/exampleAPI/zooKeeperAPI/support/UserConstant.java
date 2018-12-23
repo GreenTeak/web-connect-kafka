@@ -24,6 +24,8 @@ public class UserConstant {
     public static final String TEST = "test";
     public static final String DELIMITER = ",";
 
-    public static final String STATUS = "status";
+    public static final String KEEPER_EXCEPTION = "keeperException";
+    public static final String INTERRUPTED_EXCEPTION = "InterruptedException";
+    public static final String JSON_PROCESSING_EXCEPTION = "sonProcessingException";
 
 }

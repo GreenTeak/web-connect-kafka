@@ -22,7 +22,8 @@ import java.util.TreeMap;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_NODE;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.CREATE_IS_SUCCESS;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_SUCCESS;
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.STATUS;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.INTERRUPTED_EXCEPTION;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.KEEPER_EXCEPTION;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_IS_SUCCESS;
 
 @RestController
@@ -62,7 +63,7 @@ public class ZookeeperController {
     Map<String, Object> keeperExceptionHandler(KeeperException keeperException) {
         logger.error(keeperException.getLocalizedMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(STATUS, false);
+        model.put(KEEPER_EXCEPTION, false);
         return model;
     }
 
@@ -71,7 +72,8 @@ public class ZookeeperController {
     Map<String, Object> InterruptedExceptionHandler(InterruptedException interruptedException) {
         logger.error(interruptedException.getLocalizedMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(STATUS, false);
+        model.put(INTERRUPTED_EXCEPTION, false);
         return model;
     }
+
 }
