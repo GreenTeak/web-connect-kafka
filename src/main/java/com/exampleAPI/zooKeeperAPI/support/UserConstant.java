@@ -6,14 +6,10 @@ public class UserConstant {
     public static final String DELETE_IS_SUCCESS = "delete is success";
     public static final String UPDATE_IS_SUCCESS = "update is success";
     public static final String CREATE_IS_SUCCESS = "create is success";
-    public static final String CREATE_IS_FAILURE = "create %s is failure";
-    public static final String DELETE_IS_FAILURE = "delete %s is failure";
-    public static final String UPDATE_S_IS_FAILURE = "update %s is failure";
 
     public static final String API_NODE = "/api/node";
     public static final String API_USER_REGISTER = "/api/user/register";
     public static final String API_USER_LOGIN = "/api/user/login";
-    public static final String LOGIN_IS_WRONG = "login is wrong";
     public static final String API_USER_UPDATE = "/api/user/update";
     public static final String API_USER_DELETE = "/api/user/delete";
 

@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PATH;
+import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST3;
+import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST3_PATH;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,9 +21,6 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class ZookeeperServiceTest {
-
-    public static final String TEST3_PATH = "/test3";
-    public static final String TEST3 = "test3";
 
     public Watcher watcher;
 

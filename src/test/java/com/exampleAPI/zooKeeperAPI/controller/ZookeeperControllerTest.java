@@ -17,6 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_NODE;
+import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST2;
+import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST2_PATH;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,10 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 public class ZookeeperControllerTest {
-
-    public static final String API_NODE = "/api/node";
-    public static final String TEST2_PATH = "/test2";
-    public static final String TEST2 = "test2";
 
     @MockBean
     private ZookeeperService zookeeperService;
