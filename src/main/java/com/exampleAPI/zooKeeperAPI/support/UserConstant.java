@@ -5,6 +5,7 @@ public class UserConstant {
     public static final String REQUEST_IS_WRONG = "request is wrong";
     public static final String DELETE_IS_SUCCESS = "delete is success";
     public static final String UPDATE_IS_SUCCESS = "update is success";
+    public static final String CREATE_IS_SUCCESS = "create is success";
     public static final String CREATE_IS_FAILURE = "create %s is failure";
     public static final String DELETE_IS_FAILURE = "delete %s is failure";
     public static final String UPDATE_S_IS_FAILURE = "update %s is failure";
@@ -26,5 +27,7 @@ public class UserConstant {
     public static final String CONNECT_STRING = "127.0.0.1:2181";
     public static final String TEST = "test";
     public static final String DELIMITER = ",";
+
+    public static final String STATUS = "status";
 
 }
