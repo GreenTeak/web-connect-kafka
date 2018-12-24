@@ -44,13 +44,13 @@ public class UserController {
 
     public final Logger logger = Logger.getLogger(UserController.class);
 
-    @PostMapping(value = "/api/user/register")
+    @PostMapping("/api/user/register")
     public ResponseEntity<String> addUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
-        userService.addUser(user);
+        boolean result = userService.addUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmail());
     }
 
-    @GetMapping(value = "/api/user/login")
+    @GetMapping("/api/user/login")
     public ResponseEntity<String> userLogin(@RequestParam(value = EMAIL) String email,
                                             @RequestParam(value = PASSWORD) String password) throws InterruptedException, IOException, KeeperException {
 
@@ -62,13 +62,13 @@ public class UserController {
         return new ResponseEntity<>(REQUEST_IS_WRONG, HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping(value = "/api/user/update")
+    @PutMapping("/api/user/update")
     public ResponseEntity<String> updateUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
         userService.updateUser(user);
         return new ResponseEntity<>(UPDATE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping(value = "/api/user/delete")
+    @DeleteMapping("/api/user/delete")
     public ResponseEntity<String> deleteMapping(@RequestParam String email) throws KeeperException, InterruptedException {
         userService.deleteUser(email);
         return new ResponseEntity<>(DELETE_IS_SUCCESS, HttpStatus.ACCEPTED);

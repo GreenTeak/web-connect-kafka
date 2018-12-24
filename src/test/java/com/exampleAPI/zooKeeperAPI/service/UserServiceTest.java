@@ -15,12 +15,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 
+import static com.exampleAPI.zooKeeperAPI.support.JsonAndObject.ObjectToJson;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST_1;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST_PATH;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST_PATH_QQ_COM;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST_QQ_COM;
+import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST_QQ_COM_NULL;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -33,29 +37,29 @@ public class UserServiceTest {
     @MockBean
     private ZookeeperService zookeeperService;
 
-    @Autowired
-    public JsonAndObject jsonAndObject;
-
     private UserService userService;
 
     private User user = new User(TEST_QQ_COM, TEST, 12);
 
+    public String userJson;
+
     @Before
     public void setUp() throws KeeperException, InterruptedException, IOException {
+        userJson = ObjectToJson(user);
         zookeeperService = mock(ZookeeperService.class);
 
         when(zookeeperService.getData(TEST_PATH_QQ_COM)).thenReturn(user);
         when(zookeeperService.getData(TEST_PATH_QQ_COM)).thenReturn(null);
         when(zookeeperService.getStat(TEST_PATH_QQ_COM)).thenReturn(null);
+        when(zookeeperService.listNodeData()).thenReturn(TEST_QQ_COM_NULL);
 
         userService = new UserService(zookeeperService);
     }
 
     @Test
     public void shouldBeAddNodeWhenAddUser() throws InterruptedException, KeeperException, JsonProcessingException {
-        userService.addUser(user);
-
-        verify(zookeeperService, times(1)).addNodeIfNotExists(any(Node.class));
+        boolean result = userService.addUser(user);
+        assertFalse(result);
     }
 
     @Test
@@ -74,7 +78,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldBeUpdateOnceWhenUpdateUser() throws InterruptedException, KeeperException, JsonProcessingException {
-        String userJson = jsonAndObject.ObjectToJson(user);
+
         Node node = new Node(TEST_PATH + user.getEmail(), userJson);
 
         userService.updateUser(user);

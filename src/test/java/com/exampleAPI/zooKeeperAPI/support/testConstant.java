@@ -12,4 +12,5 @@ public class testConstant {
 
     public static final String TEST3_PATH = "/test3";
     public static final String TEST3 = "test3";
+    public static final String TEST_QQ_COM_NULL = "test@qq.com,null";
 }

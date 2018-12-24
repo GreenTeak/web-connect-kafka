@@ -2,7 +2,6 @@ package com.exampleAPI.zooKeeperAPI.service;
 
 import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.model.User;
-import com.exampleAPI.zooKeeperAPI.support.JsonAndObject;
 import lombok.Data;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -10,16 +9,15 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
+import static com.exampleAPI.zooKeeperAPI.support.JsonAndObject.JsonToObject;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.CONNECT_STRING;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DEFAULT_TEST;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELIMITER;
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PATH;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.TEST;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.ZOOKEEPER_PATH_TEST;
 
@@ -27,9 +25,6 @@ import static com.exampleAPI.zooKeeperAPI.support.UserConstant.ZOOKEEPER_PATH_TE
 @Service
 @Data
 public class ZookeeperService {
-
-    @Autowired
-    public JsonAndObject jsonAndObject;
 
     public ZooKeeper zookeeper;
     public Watcher watcher;
@@ -42,7 +37,7 @@ public class ZookeeperService {
     public ZookeeperService() throws InterruptedException, IOException, KeeperException {
         watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
         zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
-        addNodeIfNotExists(new Node(PATH, TEST));
+        addNodeIfNotExists(new Node(DEFAULT_TEST, TEST));
     }
 
 
@@ -60,13 +55,11 @@ public class ZookeeperService {
         zookeeper.setData(node.getPath(), node.getContent().getBytes(), -1);
     }
 
-    public boolean addNodeIfNotExists(Node node) throws KeeperException, InterruptedException {
+    public void addNodeIfNotExists(Node node) throws KeeperException, InterruptedException {
         Stat stat = getStat(node.getPath());
         if (stat == null) {
             addNodeData(node.getPath(), node.getContent());
-            return true;
         }
-        return false;
     }
 
     public Stat getStat(String path) throws KeeperException, InterruptedException {
@@ -75,8 +68,7 @@ public class ZookeeperService {
 
     public User getData(String path) throws KeeperException, InterruptedException, IOException {
         byte[] data = zookeeper.getData(path, false, null);
-        User user = jsonAndObject.JsonToObject(new String(data));
-        return user;
+        return JsonToObject(new String(data));
     }
 
     private void addNodeData(String path, String data) throws KeeperException, InterruptedException {

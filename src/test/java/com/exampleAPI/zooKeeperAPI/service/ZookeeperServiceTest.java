@@ -8,9 +8,8 @@ import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PATH;
+import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DEFAULT_TEST;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST3;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST3_PATH;
 import static org.mockito.Mockito.mock;
@@ -53,7 +52,7 @@ public class ZookeeperServiceTest {
     @Test
     public void shouldListNodeOnceWhenListNode() throws KeeperException, InterruptedException {
         zookeeperService.listNodeData();
-        verify(zk, times(1)).getChildren(PATH, true);
+        verify(zk, times(1)).getChildren(DEFAULT_TEST , true);
     }
 
     @Test

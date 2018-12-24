@@ -1,6 +1,7 @@
 package com.exampleAPI.zooKeeperAPI.controller;
 
 import com.exampleAPI.zooKeeperAPI.model.Node;
+import com.exampleAPI.zooKeeperAPI.model.User;
 import com.exampleAPI.zooKeeperAPI.service.ZookeeperService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,9 +18,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.exampleAPI.zooKeeperAPI.support.JsonAndObject.ObjectToJson;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_NODE;
+import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST2;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST2_PATH;
+import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST_QQ_COM;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,15 +58,16 @@ public class ZookeeperControllerTest {
     }
 
     @Test
-    public void shouldBeReturnStatusIsCreatedWhenAddNode() throws Exception {
+    public void shouldBeReturnStatusIsAcceptedWhenAddNode() throws Exception {
         mvc.perform(post(API_NODE)
                 .content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isAccepted());
         verify(zookeeperService, times(1))
                 .addNodeIfNotExists(node);
 
     }
+
 
     @Test
     public void shouldBeReturnStatusIsAcceptedWhenUpdateNode() throws Exception {
