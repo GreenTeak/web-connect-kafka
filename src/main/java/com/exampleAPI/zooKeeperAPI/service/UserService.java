@@ -49,8 +49,11 @@ public class UserService {
 
     public Integer userLogin(String email, String password) throws KeeperException, InterruptedException, IOException {
 
-        Stat stat = zookeeperService.getStat(PATH + email);
-        if (stat == null) return -1;
+        //Stat stat = zookeeperService.getStat(PATH + email);
+        //if (stat == null) return -1;
+        if(!validateUserExistOrNot(email)){
+            return -1;
+        }
 
         User user = zookeeperService.getData(PATH + email);
         if (user != null || !user.getPassword().equals(password)) {

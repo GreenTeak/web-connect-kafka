@@ -21,6 +21,7 @@ import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,17 +45,16 @@ public class UserController {
 
     public final Logger logger = Logger.getLogger(UserController.class);
 
-    @PostMapping("/api/user/register")
+    @PostMapping(value = "/api/user/register")
     public ResponseEntity<String> addUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
         boolean result = userService.addUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmail());
     }
 
-    @GetMapping("/api/user/login")
-    public ResponseEntity<String> userLogin(@RequestParam(value = EMAIL) String email,
-                                            @RequestParam(value = PASSWORD) String password) throws InterruptedException, IOException, KeeperException {
+    @PostMapping(value = "/api/user/login")
+    public ResponseEntity<String> userLogin(@RequestBody User user) throws InterruptedException, IOException, KeeperException {
 
-        Integer age = userService.userLogin(email, password);
+        Integer age = userService.userLogin(user.getEmail(), user.getPassword());
 
         if (age != -1) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(age.toString());
@@ -62,13 +62,13 @@ public class UserController {
         return new ResponseEntity<>(REQUEST_IS_WRONG, HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/api/user/update")
+    @PutMapping(value = "/api/user/update")
     public ResponseEntity<String> updateUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
         userService.updateUser(user);
         return new ResponseEntity<>(UPDATE_IS_SUCCESS, HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/api/user/delete")
+    @DeleteMapping(value = "/api/user/delete")
     public ResponseEntity<String> deleteMapping(@RequestParam String email) throws KeeperException, InterruptedException {
         userService.deleteUser(email);
         return new ResponseEntity<>(DELETE_IS_SUCCESS, HttpStatus.ACCEPTED);
