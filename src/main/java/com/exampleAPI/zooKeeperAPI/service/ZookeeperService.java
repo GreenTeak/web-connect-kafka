@@ -36,7 +36,7 @@ public class ZookeeperService {
 
     public ZookeeperService() throws InterruptedException, IOException, KeeperException {
         watcher = event -> System.out.println(ZOOKEEPER_PATH_TEST);
-        zookeeper = new ZooKeeper(CONNECT_STRING, 1000, watcher);
+        zookeeper = new ZooKeeper(CONNECT_STRING, 10000, watcher);
         addNodeIfNotExists(new Node(DEFAULT_TEST, TEST));
     }
 
