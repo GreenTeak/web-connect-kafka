@@ -18,7 +18,7 @@
         <producerConfig>block.on.buffer.full=false</producerConfig>
         <producerConfig>client.id=test-example</producerConfig>
     </appender>
-    <root level="INFO">
+    <root level="INFO">z
         <appender-ref ref="kafkaAppender"/>
         <appender-ref ref="STDOUT"/>
     </root>

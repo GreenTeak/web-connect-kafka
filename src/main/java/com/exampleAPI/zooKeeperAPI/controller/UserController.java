@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,7 +46,7 @@ public class UserController {
 
     @PostMapping(value = "/api/user/register")
     public ResponseEntity<String> addUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
-        boolean result = userService.addUser(user);
+        userService.addUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmail());
     }
 
@@ -98,5 +99,4 @@ public class UserController {
         model.put(JSON_PROCESSING_EXCEPTION, false);
         return model;
     }
-
 }

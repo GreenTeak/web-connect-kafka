@@ -29,6 +29,7 @@ repositories {
 dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	compile "org.springframework.boot:spring-boot-starter-aop"
 	compile("org.apache.curator:curator-recipes:2.10.0")
 	compile("org.apache.curator:curator-framework:2.10.0")
 	compile 'io.springfox:springfox-swagger2:2.7.0'
