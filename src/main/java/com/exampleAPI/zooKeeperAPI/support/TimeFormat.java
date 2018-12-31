@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 @Component
 public class TimeFormat {
     public static String currentToDate(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return dateFormat.format(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(System.currentTimeMillis()).replace("-","");
     }
 }

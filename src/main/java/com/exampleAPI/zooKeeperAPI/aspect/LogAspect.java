@@ -1,8 +1,7 @@
 package com.exampleAPI.zooKeeperAPI.aspect;
 
 import com.exampleAPI.zooKeeperAPI.model.LogType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -33,13 +32,12 @@ public class LogAspect {
 
     private ThreadLocal<Long> startTime = new ThreadLocal<>();
 
-
     @Pointcut("execution(* com.exampleAPI.zooKeeperAPI.controller.*.*(..))")
     public void log() {
     }
 
     @Before("log()")
-    public void doBefore(JoinPoint joinPoint) throws Throwable {
+    public void doBefore(JoinPoint joinPoint) {
         startTime.set(System.currentTimeMillis());
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -51,12 +49,16 @@ public class LogAspect {
     @AfterReturning(returning = "ret", pointcut = "log()")
     public void doAfterReturning(Object ret) throws Throwable {
 
-        logType.setResponse(ret.toString());
-        String requestJson = LogTypeToJson(logType);
+        String requestJson = responseToJson(ret);
 
         logger.info("LogType : " + requestJson);
 
-        producer.send(requestJson);
+        producer.send(producer.combineMessage(logType));
+    }
+
+    private String responseToJson(Object ret) throws JsonProcessingException {
+        logType.setResponse(ret.toString());
+        return LogTypeToJson(logType);
     }
 
     private void setLogType(JoinPoint joinPoint, HttpServletRequest request) {
@@ -65,5 +67,6 @@ public class LogAspect {
         logType.setType(request.getMethod());
         logType.setUrl(request.getRequestURL().toString());
     }
+
 }
 
