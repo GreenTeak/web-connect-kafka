@@ -1,5 +1,6 @@
 package com.exampleAPI.zooKeeperAPI.support;
 
+import com.exampleAPI.zooKeeperAPI.model.LogType;
 import com.exampleAPI.zooKeeperAPI.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,5 +22,9 @@ public  class JsonAndObject {
         ObjectMapper mapper = new ObjectMapper();
         User user = mapper.readValue(input, User.class);
         return user;
+    }
+    public static String LogTypeToJson(LogType logType) throws JsonProcessingException {
+        String userJson = ow.writeValueAsString(logType);
+        return userJson;
     }
 }

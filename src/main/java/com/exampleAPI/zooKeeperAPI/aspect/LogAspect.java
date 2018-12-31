@@ -17,17 +17,22 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
+import static com.exampleAPI.zooKeeperAPI.support.JsonAndObject.LogTypeToJson;
+import static com.exampleAPI.zooKeeperAPI.support.TimeFormat.currentToDate;
+
 @Aspect
 @Component
 public class LogAspect {
     @Autowired
     private Producer producer;
 
-    private Logger logger = Logger.getLogger(this.getClass());
-    private ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    @Autowired
+    private LogType logType;
 
-    public ThreadLocal<Long> startTime = new ThreadLocal<>();
-    private LogType logType = new LogType();
+    private Logger logger = Logger.getLogger(this.getClass());
+
+    private ThreadLocal<Long> startTime = new ThreadLocal<>();
+
 
     @Pointcut("execution(* com.exampleAPI.zooKeeperAPI.controller.*.*(..))")
     public void log() {
@@ -40,18 +45,25 @@ public class LogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
-        logType.setData(String.valueOf(System.currentTimeMillis()));
-        logType.setParmater(Arrays.toString(joinPoint.getArgs()));
-        logType.setType(request.getMethod());
-        logType.setUrl(request.getRequestURL().toString());
+        setLogType(joinPoint, request);
     }
 
     @AfterReturning(returning = "ret", pointcut = "log()")
     public void doAfterReturning(Object ret) throws Throwable {
-        logType.setReponse(ret.toString());
-        String requestJson = ow.writeValueAsString(logType);
+
+        logType.setResponse(ret.toString());
+        String requestJson = LogTypeToJson(logType);
+
         logger.info("LogType : " + requestJson);
+
         producer.send(requestJson);
+    }
+
+    private void setLogType(JoinPoint joinPoint, HttpServletRequest request) {
+        logType.setDate(currentToDate());
+        logType.setParameter(Arrays.toString(joinPoint.getArgs()));
+        logType.setType(request.getMethod());
+        logType.setUrl(request.getRequestURL().toString());
     }
 }
 
