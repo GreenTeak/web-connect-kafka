@@ -1,15 +1,9 @@
 package com.exampleAPI.zooKeeperAPI.controller;
 
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_USER_DELETE;
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_USER_LOGIN;
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_USER_REGISTER;
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.API_USER_UPDATE;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_SUCCESS;
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.EMAIL;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.INTERRUPTED_EXCEPTION;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.JSON_PROCESSING_EXCEPTION;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.KEEPER_EXCEPTION;
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PASSWORD;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.REQUEST_IS_WRONG;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_IS_SUCCESS;
 
@@ -19,7 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

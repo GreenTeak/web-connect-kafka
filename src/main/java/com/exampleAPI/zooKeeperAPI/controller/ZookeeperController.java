@@ -5,7 +5,6 @@ import com.exampleAPI.zooKeeperAPI.service.ZookeeperService;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +24,7 @@ import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_SUCCESS
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.INTERRUPTED_EXCEPTION;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.KEEPER_EXCEPTION;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_IS_SUCCESS;
+
 
 @RestController
 public class ZookeeperController {

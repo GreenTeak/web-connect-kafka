@@ -5,9 +5,9 @@ import com.exampleAPI.zooKeeperAPI.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
