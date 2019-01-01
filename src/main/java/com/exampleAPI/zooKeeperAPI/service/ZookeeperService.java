@@ -62,7 +62,7 @@ public class ZookeeperService {
         }
     }
 
-    public Stat getStat(String path) throws KeeperException, InterruptedException {
+    private Stat getStat(String path) throws KeeperException, InterruptedException {
         return zookeeper.exists(path, true);
     }
 

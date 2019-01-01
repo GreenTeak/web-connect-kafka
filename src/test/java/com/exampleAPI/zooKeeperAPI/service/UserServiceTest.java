@@ -2,15 +2,10 @@ package com.exampleAPI.zooKeeperAPI.service;
 
 import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.model.User;
-import com.exampleAPI.zooKeeperAPI.support.JsonAndObject;
-import com.exampleAPI.zooKeeperAPI.support.testConstant;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.zookeeper.KeeperException;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
@@ -51,7 +46,6 @@ public class UserServiceTest {
         when(zookeeperService.getData(TEST_PATH_QQ_COM)).thenReturn(user);
         when(zookeeperService.getData(TEST1_PATH_QQ_COM)).thenReturn(user);
         when(zookeeperService.getData(TEST_PATH_QQ_COM)).thenReturn(null);
-        when(zookeeperService.getStat(TEST_PATH_QQ_COM)).thenReturn(null);
         when(zookeeperService.listNodeData()).thenReturn(TEST_QQ_COM_NULL);
 
         userService = new UserService(zookeeperService);

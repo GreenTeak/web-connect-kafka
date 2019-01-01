@@ -33,9 +33,9 @@ import java.util.TreeMap;
 public class UserController {
 
     @Autowired
-    public UserService userService;
+    private UserService userService;
 
-    public final Logger logger = Logger.getLogger(UserController.class);
+    private final Logger logger = Logger.getLogger(UserController.class);
 
     @PostMapping(value = "/api/user/register")
     public ResponseEntity<String> addUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {

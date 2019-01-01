@@ -57,9 +57,9 @@ public class UserControllerTest {
         when(zookeeperService.getData(TEST_PATH_QQ_COM)).thenReturn(user);
         when(zookeeperService.listNodeData()).thenReturn(TEST_QQ_COM_NULL);
 
-        zookeeperService = mock(ZookeeperService.class);
         userService = new UserService(zookeeperService);
         requestJson = ObjectToJson(user);
+        zookeeperService = mock(ZookeeperService.class);
 
     }
 

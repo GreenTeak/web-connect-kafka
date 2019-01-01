@@ -29,10 +29,10 @@ import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_IS_SUCCESS
 @RestController
 public class ZookeeperController {
 
-    public final Logger logger = Logger.getLogger(ZookeeperController.class);
+    private final Logger logger = Logger.getLogger(ZookeeperController.class);
 
     @Autowired
-    public ZookeeperService zookeeperService;
+    private ZookeeperService zookeeperService;
 
     @GetMapping(value = "/api/node")
     public ResponseEntity<String> zkGet() throws KeeperException, InterruptedException {

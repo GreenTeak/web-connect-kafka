@@ -48,15 +48,11 @@ public class UserService {
     }
 
     public Integer userLogin(String email, String password) throws KeeperException, InterruptedException, IOException {
-
-        //Stat stat = zookeeperService.getStat(PATH + email);
-        //if (stat == null) return -1;
         if(!validateUserExistOrNot(email)){
             return -1;
         }
-
         User user = zookeeperService.getData(PATH + email);
-        if (user != null || !user.getPassword().equals(password)) {
+        if (user != null && user.getPassword().equals(password)) {
             return user.getAge();
         } else {
             logger.error(PASSWORD_IS_WRONG_OR_NOT_HAVE_THIS_USER);
@@ -64,17 +60,15 @@ public class UserService {
         }
     }
 
-    public boolean updateUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
+    public void updateUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
         String userJson = ObjectToJson(user);
         Node node = new Node(generatePath(user), userJson);
         zookeeperService.updateNodeData(node);
-        return true;
 
     }
 
-    public boolean deleteUser(String email) throws KeeperException, InterruptedException {
+    public void deleteUser(String email) throws KeeperException, InterruptedException {
         zookeeperService.deleteNode(PATH + email);
-        return true;
     }
 
     private boolean validateUserExistOrNot(String email) throws KeeperException, InterruptedException {
