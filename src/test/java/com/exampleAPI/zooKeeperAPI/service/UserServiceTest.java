@@ -17,6 +17,8 @@ import java.io.IOException;
 
 import static com.exampleAPI.zooKeeperAPI.support.JsonAndObject.ObjectToJson;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST;
+import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST1_PATH_QQ_COM;
+import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST1_QQ_COM;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST_1;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST_PATH;
 import static com.exampleAPI.zooKeeperAPI.support.testConstant.TEST_PATH_QQ_COM;
@@ -47,6 +49,7 @@ public class UserServiceTest {
         zookeeperService = mock(ZookeeperService.class);
 
         when(zookeeperService.getData(TEST_PATH_QQ_COM)).thenReturn(user);
+        when(zookeeperService.getData(TEST1_PATH_QQ_COM)).thenReturn(user);
         when(zookeeperService.getData(TEST_PATH_QQ_COM)).thenReturn(null);
         when(zookeeperService.getStat(TEST_PATH_QQ_COM)).thenReturn(null);
         when(zookeeperService.listNodeData()).thenReturn(TEST_QQ_COM_NULL);
@@ -62,14 +65,14 @@ public class UserServiceTest {
 
     @Test
     public void shouldBeReturnNegativeWhenPasswordIsWrong() throws KeeperException, InterruptedException, IOException {
-        Integer test1 = userService.userLogin(TEST_QQ_COM, TEST_1);
+        Integer test1 = userService.userLogin(TEST1_QQ_COM, TEST_1);
 
         assertEquals(test1.intValue(), -1);
     }
 
     @Test
     public void shouldBeReturnNegativeWhenEmailIsWrong() throws KeeperException, InterruptedException, IOException {
-        Integer test1 = userService.userLogin(TEST_QQ_COM, testConstant.TEST);
+        Integer test1 = userService.userLogin(TEST1_QQ_COM, TEST);
 
         assertEquals(test1.intValue(), -1);
     }

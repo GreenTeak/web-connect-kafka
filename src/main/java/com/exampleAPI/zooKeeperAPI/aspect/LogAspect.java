@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.exampleAPI.zooKeeperAPI.aspect.Producer.COMMA;
 import static com.exampleAPI.zooKeeperAPI.support.JsonAndObject.LogTypeToJson;
 import static com.exampleAPI.zooKeeperAPI.support.TimeFormat.currentToDate;
 
