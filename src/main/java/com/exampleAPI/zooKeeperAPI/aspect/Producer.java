@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Producer {
 
+    public static final String COMMA = ",";
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Value("${spring.kafka.topic}")
@@ -22,6 +23,6 @@ public class Producer {
     }
 
     public String combineMessage(LogType logType) {
-        return String.format("%s,%s,%s,%s,%s%n",logType.getDate(),logType.getUrl(),logType.getType(),logType.getParameter(),logType.getResponse());
+        return logType.getDate() + COMMA + logType.getUrlType() + COMMA + logType.getType() + COMMA + logType.getParameter() + COMMA + logType.getResponse() + "\t";
     }
 }

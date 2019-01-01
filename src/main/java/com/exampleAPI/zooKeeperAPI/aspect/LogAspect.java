@@ -15,7 +15,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Objects;
 
+import static com.exampleAPI.zooKeeperAPI.aspect.Producer.COMMA;
 import static com.exampleAPI.zooKeeperAPI.support.JsonAndObject.LogTypeToJson;
 import static com.exampleAPI.zooKeeperAPI.support.TimeFormat.currentToDate;
 
@@ -38,10 +40,12 @@ public class LogAspect {
 
     @Before("log()")
     public void doBefore(JoinPoint joinPoint) {
+
         startTime.set(System.currentTimeMillis());
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
+
+        HttpServletRequest request = Objects.requireNonNull(attributes).getRequest();
 
         setLogType(joinPoint, request);
     }
@@ -57,16 +61,21 @@ public class LogAspect {
     }
 
     private String responseToJson(Object ret) throws JsonProcessingException {
+
         logType.setResponse(ret.toString());
+
         return LogTypeToJson(logType);
     }
 
     private void setLogType(JoinPoint joinPoint, HttpServletRequest request) {
-        logType.setDate(currentToDate());
-        logType.setParameter(Arrays.toString(joinPoint.getArgs()));
-        logType.setType(request.getMethod());
-        logType.setUrl(request.getRequestURL().toString());
-    }
 
+        logType.setDate(currentToDate());
+
+        logType.setParameter(Arrays.toString(joinPoint.getArgs()));
+
+        logType.setType(request.getMethod());
+
+        logType.setUrlType(request.getRequestURL().toString());
+    }
 }
 
