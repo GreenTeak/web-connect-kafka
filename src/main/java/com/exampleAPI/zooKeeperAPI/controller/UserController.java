@@ -4,7 +4,6 @@ import static com.exampleAPI.zooKeeperAPI.support.UserConstant.DELETE_IS_SUCCESS
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.INTERRUPTED_EXCEPTION;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.JSON_PROCESSING_EXCEPTION;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.KEEPER_EXCEPTION;
-import static com.exampleAPI.zooKeeperAPI.support.UserConstant.REQUEST_IS_WRONG;
 import static com.exampleAPI.zooKeeperAPI.support.UserConstant.UPDATE_IS_SUCCESS;
 
 import com.exampleAPI.zooKeeperAPI.model.User;
@@ -44,26 +43,26 @@ public class UserController {
     }
 
     @PostMapping(value = "/api/user/login")
-    public ResponseEntity<String> userLogin(@RequestBody User user) throws InterruptedException, IOException, KeeperException {
+    public ResponseEntity<Boolean> userLogin(@RequestBody User user) throws InterruptedException, IOException, KeeperException {
 
         Integer age = userService.userLogin(user.getEmail(), user.getPassword());
 
         if (age != -1) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(age.toString());
+            return ResponseEntity.status(HttpStatus.OK).body(true);
         }
-        return new ResponseEntity<>(REQUEST_IS_WRONG, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(false);
     }
 
     @PutMapping(value = "/api/user/update")
     public ResponseEntity<String> updateUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
         userService.updateUser(user);
-        return new ResponseEntity<>(UPDATE_IS_SUCCESS, HttpStatus.ACCEPTED);
+        return ResponseEntity.status(HttpStatus.OK).body(user.getEmail());
     }
 
     @DeleteMapping(value = "/api/user/delete")
     public ResponseEntity<String> deleteMapping(@RequestParam String email) throws KeeperException, InterruptedException {
         userService.deleteUser(email);
-        return new ResponseEntity<>(DELETE_IS_SUCCESS, HttpStatus.ACCEPTED);
+        return ResponseEntity.status(HttpStatus.OK).body(email);
     }
 
     @ExceptionHandler(KeeperException.class)

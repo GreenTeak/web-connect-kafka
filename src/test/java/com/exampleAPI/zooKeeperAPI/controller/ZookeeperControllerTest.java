@@ -58,11 +58,11 @@ public class ZookeeperControllerTest {
     }
 
     @Test
-    public void shouldBeReturnStatusIsAcceptedWhenAddNode() throws Exception {
+    public void shouldBeReturnStatusIsOkWhenAddNode() throws Exception {
         mvc.perform(post(API_NODE)
                 .content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
         verify(zookeeperService, times(1))
                 .addNodeIfNotExists(node);
 
@@ -70,11 +70,11 @@ public class ZookeeperControllerTest {
 
 
     @Test
-    public void shouldBeReturnStatusIsAcceptedWhenUpdateNode() throws Exception {
+    public void shouldBeReturnStatusIsOkWhenUpdateNode() throws Exception {
         mvc.perform(put(API_NODE)
                 .content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
         verify(zookeeperService, times(1))
                 .updateNodeData(node);
     }
@@ -93,12 +93,12 @@ public class ZookeeperControllerTest {
     }
 
     @Test
-    public void shouldBeReturnStatusIsAcceptedWhenDeleteNode() throws Exception {
+    public void shouldBeReturnStatusIsOkWhenDeleteNode() throws Exception {
 
         mvc.perform(delete(API_NODE)
                 .content(TEST2_PATH)
                 .contentType(MediaType.ALL))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
 
         verify(zookeeperService, times(1))
                 .deleteNode(TEST2_PATH);

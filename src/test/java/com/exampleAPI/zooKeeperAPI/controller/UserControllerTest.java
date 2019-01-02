@@ -72,25 +72,25 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldBeReturnAgeWhenUserLogin() throws Exception {
+    public void shouldBeReturnStatusIsOkWhenUserLogin() throws Exception {
         mvc.perform(post("/api/user/login")
                 .content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void shouldBeReturnStatusIsAcceptedWhenUserUpdate() throws Exception {
+    public void shouldBeReturnStatusIsOkWhenUserUpdate() throws Exception {
         mvc.perform(put("/api/user/update")
                 .content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void shouldBeReturnStatusIsAcceptedWhenUserDelete() throws Exception {
+    public void shouldBeReturnStatusIsOkWhenUserDelete() throws Exception {
         String request = "{\"email\":\"test@qq.com\"}";
         mvc.perform(delete("/api/user/delete?email=test@qq.com"))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
     }
 }
