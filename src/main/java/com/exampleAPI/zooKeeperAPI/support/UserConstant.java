@@ -1,5 +1,7 @@
 package com.exampleAPI.zooKeeperAPI.support;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 public class UserConstant {
 
     public static final String REQUEST_IS_WRONG = "request is wrong";
@@ -11,6 +13,7 @@ public class UserConstant {
 
     public static final String EMAIL = "email";
     public static final String AGE = "age";
+    public static final String PASSWORD = "password";
 
     public static final String PATH = "/test/";
     public static final String DEFAULT_TEST = "/test";

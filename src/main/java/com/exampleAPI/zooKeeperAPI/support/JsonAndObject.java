@@ -15,12 +15,20 @@ public  class JsonAndObject {
     private static ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
     public static String ObjectToJson(User user) throws JsonProcessingException {
-        return ow.writeValueAsString(user);
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String userJson = ow.writeValueAsString(user);
+        return userJson;
     }
     public static User JsonToObject(String input) throws IOException {
-        return mapper.readValue(input, User.class);
+        ObjectMapper mapper = new ObjectMapper();
+        User user = mapper.readValue(input, User.class);
+        return user;
     }
     public static String LogTypeToJson(LogType logType) throws JsonProcessingException {
-        return ow.writeValueAsString(logType);
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String userJson = ow.writeValueAsString(logType);
+        return userJson;
     }
 }
