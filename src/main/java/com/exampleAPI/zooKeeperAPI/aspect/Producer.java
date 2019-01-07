@@ -1,6 +1,6 @@
 package com.exampleAPI.zooKeeperAPI.aspect;
 
-import com.exampleAPI.zooKeeperAPI.model.LogType;
+import com.exampleAPI.zooKeeperAPI.model.LogItem;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class Producer {
         this.kafkaTemplate.send(topic, message);
     }
 
-    public String combineMessage(LogType logType) {
-        return logType.getDate() + COMMA + logType.getUrlType() + COMMA + logType.getType() + COMMA + logType.getParameter() + COMMA + logType.getResponse() + "\t";
+    public String combineMessage(LogItem logItem) {
+        return logItem.getDate() + COMMA + logItem.getUrlType() + COMMA + logItem.getType() + COMMA + logItem.getParameter() + COMMA + logItem.getResponse() + "\t";
     }
 }

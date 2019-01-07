@@ -1,6 +1,6 @@
 package com.exampleAPI.zooKeeperAPI.aspect;
 
-import com.exampleAPI.zooKeeperAPI.model.LogType;
+import com.exampleAPI.zooKeeperAPI.model.LogItem;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
@@ -27,7 +27,7 @@ public class LogAspect {
     private Producer producer;
 
     @Autowired
-    private LogType logType;
+    private LogItem logItem;
 
     private Logger logger = Logger.getLogger(this.getClass());
 
@@ -54,27 +54,27 @@ public class LogAspect {
 
         String requestJson = responseToJson(ret);
 
-        logger.info("LogType : " + requestJson);
+        logger.info("LogItem : " + requestJson);
 
-        producer.send(producer.combineMessage(logType));
+        producer.send(producer.combineMessage(logItem));
     }
 
     private String responseToJson(Object ret) throws JsonProcessingException {
 
-        logType.setResponse(ret.toString());
+        logItem.setResponse(ret.toString());
 
-        return LogTypeToJson(logType);
+        return LogTypeToJson(logItem);
     }
 
     private void setLogType(JoinPoint joinPoint, HttpServletRequest request) {
 
-        logType.setDate(currentToDate());
+        logItem.setDate(currentToDate());
 
-        logType.setParameter(Arrays.toString(joinPoint.getArgs()));
+        logItem.setParameter(Arrays.toString(joinPoint.getArgs()));
 
-        logType.setType(request.getMethod());
+        logItem.setType(request.getMethod());
 
-        logType.setUrlType(request.getRequestURL().toString());
+        logItem.setUrlType(request.getRequestURL().toString());
     }
 }
 

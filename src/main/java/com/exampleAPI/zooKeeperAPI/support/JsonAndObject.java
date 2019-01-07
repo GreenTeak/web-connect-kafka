@@ -1,6 +1,6 @@
 package com.exampleAPI.zooKeeperAPI.support;
 
-import com.exampleAPI.zooKeeperAPI.model.LogType;
+import com.exampleAPI.zooKeeperAPI.model.LogItem;
 import com.exampleAPI.zooKeeperAPI.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,10 +25,10 @@ public  class JsonAndObject {
         User user = mapper.readValue(input, User.class);
         return user;
     }
-    public static String LogTypeToJson(LogType logType) throws JsonProcessingException {
+    public static String LogTypeToJson(LogItem logItem) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String userJson = ow.writeValueAsString(logType);
+        String userJson = ow.writeValueAsString(logItem);
         return userJson;
     }
 }

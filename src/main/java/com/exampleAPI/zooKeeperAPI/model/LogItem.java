@@ -14,7 +14,7 @@ import static com.exampleAPI.zooKeeperAPI.aspect.Producer.COMMA;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Getter
-public class LogType {
+public class LogItem {
     String date;
     String urlType;
     String type;

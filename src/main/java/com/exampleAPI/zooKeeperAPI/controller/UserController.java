@@ -36,7 +36,7 @@ public class UserController {
 
     private final Logger logger = Logger.getLogger(UserController.class);
 
-    @PostMapping(value = "/api/user/register")
+    @PostMapping(value = "/api/users/register")
     public ResponseEntity<String> addUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
         if (userService.addUser(user)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmail());
@@ -44,7 +44,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(user.getEmail());
     }
 
-    @PostMapping(value = "/api/user/login")
+    @PostMapping(value = "/api/users/login")
     public ResponseEntity<Boolean> userLogin(@RequestBody User user) throws InterruptedException, IOException, KeeperException {
 
         String email = userService.userLogin(user.getEmail(), user.getPassword());
@@ -55,14 +55,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(false);
     }
 
-    @PutMapping(value = "/api/user/update")
-    public ResponseEntity<String> updateUser(@RequestParam User user, @RequestBody String password) throws InterruptedException, KeeperException, JsonProcessingException {
-        if (userService.updateUser(user, password)) {
+    @PutMapping(value = "/api/users")
+    public ResponseEntity<String> updateUser(@RequestParam User user, @RequestBody String newPassword) throws InterruptedException, KeeperException, JsonProcessingException {
+        if (userService.updateUser(user, newPassword)) {
             return ResponseEntity.status(HttpStatus.OK).body(user.getEmail());
-        } else return ResponseEntity.status(HttpStatus.CONFLICT).body(user.getEmail());
+        } else return ResponseEntity.status(HttpStatus.NO_CONTENT).body(user.getEmail());
     }
 
-    @DeleteMapping(value = "/api/user/delete")
+    @DeleteMapping(value = "/api/users")
     public ResponseEntity<String> deleteMapping(@RequestParam String email) throws KeeperException, InterruptedException {
         userService.deleteUser(email);
         return ResponseEntity.status(HttpStatus.OK).body(email);
