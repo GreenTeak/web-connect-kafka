@@ -59,16 +59,16 @@ public class UserServiceTest {
 
     @Test
     public void shouldBeReturnNegativeWhenPasswordIsWrong() throws KeeperException, InterruptedException, IOException {
-        Integer test1 = userService.userLogin(TEST1_QQ_COM, TEST_1);
+        String test1 = userService.userLogin(TEST1_QQ_COM, TEST_1);
 
-        assertEquals(test1.intValue(), -1);
+        assertEquals(test1, null);
     }
 
     @Test
     public void shouldBeReturnNegativeWhenEmailIsWrong() throws KeeperException, InterruptedException, IOException {
-        Integer test1 = userService.userLogin(TEST1_QQ_COM, TEST);
+        String test1 = userService.userLogin(TEST1_QQ_COM, TEST);
 
-        assertEquals(test1.intValue(), -1);
+        assertEquals(test1, null);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class UserServiceTest {
 
         Node node = new Node(TEST_PATH + user.getEmail(), userJson);
 
-        userService.updateUser(user);
+        userService.updateUser(user,TEST_1);
 
         verify(zookeeperService, times(1)).updateNodeData(node);
     }

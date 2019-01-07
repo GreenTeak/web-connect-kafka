@@ -67,7 +67,7 @@ public class ZookeeperService {
     }
 
     public User getData(String path) throws KeeperException, InterruptedException, IOException {
-        byte[] data = zookeeper.getData(path, false, null);
+        byte[] data = zookeeper.getData(path, true, null);
         return JsonToObject(new String(data));
     }
 

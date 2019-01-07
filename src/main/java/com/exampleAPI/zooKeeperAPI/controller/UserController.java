@@ -38,25 +38,28 @@ public class UserController {
 
     @PostMapping(value = "/api/user/register")
     public ResponseEntity<String> addUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
-        userService.addUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmail());
+        if (userService.addUser(user)) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmail());
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(user.getEmail());
     }
 
     @PostMapping(value = "/api/user/login")
     public ResponseEntity<Boolean> userLogin(@RequestBody User user) throws InterruptedException, IOException, KeeperException {
 
-        Integer age = userService.userLogin(user.getEmail(), user.getPassword());
+        String email = userService.userLogin(user.getEmail(), user.getPassword());
 
-        if (age != -1) {
+        if (null != email) {
             return ResponseEntity.status(HttpStatus.OK).body(true);
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(false);
     }
 
     @PutMapping(value = "/api/user/update")
-    public ResponseEntity<String> updateUser(@RequestBody User user) throws InterruptedException, KeeperException, JsonProcessingException {
-        userService.updateUser(user);
-        return ResponseEntity.status(HttpStatus.OK).body(user.getEmail());
+    public ResponseEntity<String> updateUser(@RequestParam User user, @RequestBody String password) throws InterruptedException, KeeperException, JsonProcessingException {
+        if (userService.updateUser(user, password)) {
+            return ResponseEntity.status(HttpStatus.OK).body(user.getEmail());
+        } else return ResponseEntity.status(HttpStatus.CONFLICT).body(user.getEmail());
     }
 
     @DeleteMapping(value = "/api/user/delete")
@@ -70,25 +73,25 @@ public class UserController {
     Map<String, Object> keeperExceptionHandler(KeeperException keeperException) {
         logger.error(keeperException.getLocalizedMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(KEEPER_EXCEPTION, false);
+        model.put(keeperException.code().toString(), keeperException.getMessage());
         return model;
     }
 
     @ExceptionHandler(InterruptedException.class)
     public @ResponseBody
     Map<String, Object> InterruptedExceptionHandler(InterruptedException interruptedException) {
-        logger.error(interruptedException.getLocalizedMessage());
+        logger.error(interruptedException.getMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(INTERRUPTED_EXCEPTION, false);
+        model.put(INTERRUPTED_EXCEPTION, interruptedException.getMessage());
         return model;
     }
 
     @ExceptionHandler(JsonProcessingException.class)
     public @ResponseBody
     Map<String, Object> JsonProcessingExceptionHandler(JsonProcessingException JsonProcessingException) {
-        logger.error(JsonProcessingException.getLocalizedMessage());
+        logger.error(JsonProcessingException.getMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(JSON_PROCESSING_EXCEPTION, false);
+        model.put(JSON_PROCESSING_EXCEPTION, JsonProcessingException.getMessage());
         return model;
     }
 }

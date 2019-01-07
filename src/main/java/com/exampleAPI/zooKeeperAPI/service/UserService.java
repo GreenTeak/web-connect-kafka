@@ -4,7 +4,6 @@ import com.exampleAPI.zooKeeperAPI.model.Node;
 import com.exampleAPI.zooKeeperAPI.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
@@ -19,7 +18,6 @@ import static com.exampleAPI.zooKeeperAPI.support.UserConstant.PATH;
 
 
 @Service
-@NoArgsConstructor
 @Data
 public class UserService {
 
@@ -27,6 +25,10 @@ public class UserService {
     public ZookeeperService zookeeperService;
 
     public final Logger logger = Logger.getLogger(UserService.class);
+
+    public UserService() throws InterruptedException, IOException, KeeperException {
+        zookeeperService = new ZookeeperService();
+    }
 
     public UserService(ZookeeperService zookeeperService) {
         this.zookeeperService = zookeeperService;
@@ -47,23 +49,29 @@ public class UserService {
         return true;
     }
 
-    public Integer userLogin(String email, String password) throws KeeperException, InterruptedException, IOException {
-        if(!validateUserExistOrNot(email)){
-            return -1;
+    public String userLogin(String email, String password) throws KeeperException, InterruptedException, IOException {
+        if (!validateUserExistOrNot(email)) {
+            return null;
         }
         User user = zookeeperService.getData(PATH + email);
         if (user != null && user.getPassword().equals(password)) {
-            return user.getAge();
+            return user.getEmail();
         } else {
             logger.error(PASSWORD_IS_WRONG_OR_NOT_HAVE_THIS_USER);
-            return -1;
+            return null;
         }
     }
 
-    public void updateUser(User user) throws JsonProcessingException, KeeperException, InterruptedException {
+    public boolean updateUser(User user, String newPassword) throws JsonProcessingException, KeeperException, InterruptedException {
+        if (!validateUserExistOrNot(user.getEmail())) {
+            logger.error("user is not exists!");
+            return false;
+        }
+        user.setPassword(newPassword);
         String userJson = ObjectToJson(user);
         Node node = new Node(generatePath(user), userJson);
         zookeeperService.updateNodeData(node);
+        return true;
 
     }
 

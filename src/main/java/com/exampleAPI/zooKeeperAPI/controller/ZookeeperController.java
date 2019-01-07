@@ -61,18 +61,18 @@ public class ZookeeperController {
     @ExceptionHandler(KeeperException.class)
     public @ResponseBody
     Map<String, Object> keeperExceptionHandler(KeeperException keeperException) {
-        logger.error(keeperException.getLocalizedMessage());
+        logger.error(keeperException.getMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(KEEPER_EXCEPTION, false);
+        model.put(keeperException.code().toString(), keeperException.getMessage());
         return model;
     }
 
     @ExceptionHandler(InterruptedException.class)
     public @ResponseBody
     Map<String, Object> InterruptedExceptionHandler(InterruptedException interruptedException) {
-        logger.error(interruptedException.getLocalizedMessage());
+        logger.error(interruptedException.getMessage());
         Map<String, Object> model = new TreeMap<>();
-        model.put(INTERRUPTED_EXCEPTION, false);
+        model.put(INTERRUPTED_EXCEPTION, interruptedException.getMessage());
         return model;
     }
 
