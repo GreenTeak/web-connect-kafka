@@ -34,25 +34,25 @@ public class ZookeeperController {
     @Autowired
     private ZookeeperService zookeeperService;
 
-    @GetMapping(value = "/api/node")
+    @GetMapping(value = "/api/nodes")
     public ResponseEntity<String> zkGet() throws KeeperException, InterruptedException {
         return ResponseEntity.status(HttpStatus.OK).body(zookeeperService.listNodeData());
     }
 
-    @PostMapping(value = "/api/node")
+    @PostMapping(value = "/api/nodes")
     public ResponseEntity<String> zkCreate(@RequestBody Node input) throws KeeperException, InterruptedException {
         zookeeperService.addNodeIfNotExists(input);
         return new ResponseEntity<>(CREATE_IS_SUCCESS, HttpStatus.OK);
 
     }
 
-    @DeleteMapping(value = "/api/node")
+    @DeleteMapping(value = "/api/nodes")
     public ResponseEntity<String> zkDelete(@RequestBody String path) throws KeeperException, InterruptedException {
         zookeeperService.deleteNode(path);
         return new ResponseEntity<>(DELETE_IS_SUCCESS, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/api/node")
+    @PutMapping(value = "/api/nodes")
     public ResponseEntity<String> zkUpdate(@RequestBody Node input) throws KeeperException, InterruptedException {
         zookeeperService.updateNodeData(input);
         return new ResponseEntity<>(UPDATE_IS_SUCCESS, HttpStatus.OK);

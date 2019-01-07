@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/api/users")
-    public ResponseEntity<String> updateUser(@RequestParam User user, @RequestBody String newPassword) throws InterruptedException, KeeperException, JsonProcessingException {
+    public ResponseEntity<String> updateUser(@RequestParam User user, @RequestBody String newPassword) throws InterruptedException, KeeperException, IOException {
         if (userService.updateUser(user, newPassword)) {
             return ResponseEntity.status(HttpStatus.OK).body(user.getEmail());
         } else return ResponseEntity.status(HttpStatus.NO_CONTENT).body(user.getEmail());

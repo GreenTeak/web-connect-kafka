@@ -62,9 +62,14 @@ public class UserService {
         }
     }
 
-    public boolean updateUser(User user, String newPassword) throws JsonProcessingException, KeeperException, InterruptedException {
+    public boolean updateUser(User user, String newPassword) throws IOException, KeeperException, InterruptedException {
         if (!validateUserExistOrNot(user.getEmail())) {
             logger.error("user is not exists!");
+            return false;
+        }
+        User userExist = zookeeperService.getData(PATH + user.getEmail());
+        if (!userExist.getPassword().equals(user.getPassword())) {
+            logger.error("password is wrong!");
             return false;
         }
         user.setPassword(newPassword);
